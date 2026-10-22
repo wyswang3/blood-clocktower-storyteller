@@ -22,6 +22,7 @@ const App = {
   onNeedClaim: null,
   onWelcome: null,
   onError: null,
+  onAISetup: null,
   lastNoticeSeq: 0,
   timers: [],
 
@@ -181,8 +182,12 @@ const App = {
       if (this.onError) this.onError(msg);
       return;
     }
-    if (msg.t === 'ai-test') {
+    if (msg.t === 'ai-test' || msg.t === 'ai-settings') {
       this.toast(msg.message, 6000);
+      return;
+    }
+    if (msg.t === 'ai-setup') {
+      if (this.onAISetup) this.onAISetup(msg);
       return;
     }
   },
@@ -296,7 +301,8 @@ const App = {
         <div class="modal">
           <h2>${escapeHtml(title)}</h2>
           ${text ? `<p>${escapeHtml(text)}</p>` : ''}
-          <input class="modal-input" maxlength="${maxlength}" value="${escapeHtml(value)}"
+          <input class="modal-input" type="${opts.secret ? 'password' : 'text'}" autocomplete="off"
+            autocapitalize="off" spellcheck="false" maxlength="${maxlength}" value="${escapeHtml(value)}"
             placeholder="${escapeHtml(placeholder)}" />
           <div class="actions">
             <button class="btn ghost" data-r="0">取消</button>
@@ -305,6 +311,7 @@ const App = {
         </div>`;
       const input = mask.querySelector('.modal-input');
       const close = (v) => {
+        if (input) input.value = '';
         mask.remove();
         resolve(v);
       };

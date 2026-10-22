@@ -158,6 +158,14 @@ test('僧侣保护小恶魔：阻止自杀及传位，红唇也不接管', () =>
   assert.deepEqual(g.night.deadTonight, []);
 });
 
+test('保留官方僧侣规则：可连续两晚守同一人，重启存档后也不额外限制', () => {
+  let g = board(); g.beginNight(2); choose(g, 'monk', [6]);
+  acknowledgeAll(g); g.endDay();
+  g = Game.fromJSON(JSON.parse(JSON.stringify(g.toJSON()))); g.beginNight(3);
+  assert.ok(jump(g, 'monk').options.some((p) => p.seat === 6));
+  choose(g, 'monk', [6]); assert.equal(g.protectedTonight, 6);
+});
+
 test('自刀时五人以上的健康红唇必须接管，不随机交给其他爪牙', () => {
   const g = board(['imp', 'poisoner', 'scarlet_woman', 'chef', 'empath', 'soldier', 'washerwoman']);
   g.beginNight(2); g.rng = () => 0;

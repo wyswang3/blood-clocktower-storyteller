@@ -12,6 +12,9 @@ const H = {
   connected: true,
   stuck: false,
   wakeLock: null,
+  aiSetupBusy: false,
+  aiSetupAllowed: false,
+  aiSetupMessage: '',
 };
 
 /* 平板别自动锁屏：一局四十分钟，黑屏一次就得解锁一次 */
@@ -87,6 +90,12 @@ function connectHost() {
         App.stopped = true;
         render();
       }
+    },
+    onAISetup: (m) => {
+      H.aiSetupBusy = m.status === 'working';
+      H.aiSetupAllowed = m.allowed === true;
+      H.aiSetupMessage = m.message || '';
+      render();
     },
   });
 }
@@ -200,6 +209,15 @@ function lobbyScreen(v) {
           <div class="row wrap" style="margin-top:20px">
             <button class="btn primary big" data-act="start">开始游戏</button>
             <button class="btn" data-act="drawer">设置</button>
+          </div>
+          <div class="card" style="padding:14px;margin-top:16px" aria-live="polite">
+            <div>AI 夜间情报：${escapeHtml(aiLabel(v.ai))}</div>
+            <div class="row wrap" style="margin-top:10px">
+              <button class="btn" data-act="setup-ai" ${H.aiSetupBusy ? 'disabled' : ''}>${H.aiSetupBusy ? '正在连接…' : v.ai && v.ai.configured ? '更换 DeepSeek 密钥' : '连接 DeepSeek'}</button>
+              ${v.ai && v.ai.configured ? `<button class="btn" data-act="toggle-ai" ${H.aiSetupBusy ? 'disabled' : ''}>${v.ai.enabled ? '暂停 AI' : '启用 AI'}</button>` : ''}
+            </div>
+            <p class="tiny dim">可选：点按钮粘贴 API Key，自动保存并连接；不连接也能开始游戏。</p>
+            ${H.aiSetupMessage ? `<p class="tiny">${escapeHtml(H.aiSetupMessage)}</p>` : ''}
           </div>
           <p class="tiny dim" style="margin-top:10px">
             ${ready ? '全部座位都连上了' : `还有 ${v.playerCount - v.joinedCount} 个座位没人加入`}
@@ -440,11 +458,13 @@ function drawer(v) {
       </div>
       <div class="drawer-row" style="margin-top:6px">
         <span class="tiny dim">DeepSeek：${escapeHtml(aiLabel(v.ai))}</span>
-        <button class="btn tiny" data-act="toggle-ai" ${v.ai && v.ai.configured ? '' : 'disabled'}>${v.ai && v.ai.enabled ? '暂停 AI' : '启用 AI'}</button>
-        <button class="btn tiny" data-act="test-ai" ${v.ai && v.ai.configured ? '' : 'disabled'}>测试连接（1 次调用）</button>
+        <button class="btn tiny" data-act="setup-ai" ${H.aiSetupBusy ? 'disabled' : ''}>${H.aiSetupBusy ? '正在连接…' : v.ai && v.ai.configured ? '更换密钥' : '连接 DeepSeek'}</button>
+        <button class="btn tiny" data-act="toggle-ai" ${v.ai && v.ai.configured && !H.aiSetupBusy ? '' : 'disabled'}>${v.ai && v.ai.enabled ? '暂停 AI' : '启用 AI'}</button>
+        <button class="btn tiny" data-act="test-ai" ${v.ai && v.ai.configured && !H.aiSetupBusy ? '' : 'disabled'}>测试连接（1 次调用）</button>
       </div>
+      ${H.aiSetupMessage ? `<p class="tiny" role="status">${escapeHtml(H.aiSetupMessage)}</p>` : ''}
       <div class="drawer-row" style="margin-top:6px;color:#615d6b;font-size:.78rem">
-        平板放桌子中间，这个抽屉防误触、不防作弊。PIN 在电脑控制台里。
+        平板放桌子中间，这个抽屉防误触、不防作弊。PIN 在平板启动窗口里。
       </div>
     </div>`;
 }
@@ -457,7 +477,7 @@ function hostAct(action, extra) {
 }
 
 function aiLabel(status) {
-  if (!status || !status.configured) return '请先在平板配置密钥';
+  if (!status || !status.configured) return '尚未连接，可直接开局';
   if (!status.enabled) return '已配置，未启用';
   return status.state === 'working' ? '正在准备情报' : status.state === 'fallback' ? '本次调用失败，已自动发情报' : '已启用';
 }
@@ -594,6 +614,23 @@ appEl.addEventListener('click', async (e) => {
   if (act === 'begin-nominations') return hostAct('beginNominations');
   if (act === 'close-vote') return hostAct('closeVote');
   if (act === 'next-night') return hostAct('beginNight', { round: (v.round || 0) + 1 });
+  if (act === 'setup-ai') {
+    if (H.aiSetupBusy) return;
+    if (!H.aiSetupAllowed) return App.alert('请在平板上操作', '请用平板启动窗口显示的本机房主链接填写密钥；使用公网时须打开 HTTPS 房主页面。');
+    let key = await App.ask(v.ai && v.ai.configured ? '更换 DeepSeek 密钥' : '连接 DeepSeek', {
+      text: '只粘贴 DeepSeek 的 API Key，不需要代码、网址或下载模型。确认后会测试一次接口（按账户规则计费），成功后自动保存并启用。请避开他人视线填写。',
+      placeholder: '粘贴 API Key', maxlength: 512, secret: true, okLabel: '保存并连接',
+    });
+    if (key == null) return;
+    key = key.trim();
+    if (!/^[A-Za-z0-9_-]{8,512}$/.test(key)) return App.toast('请粘贴完整的 API Key，不要输入代码或空格。');
+    H.aiSetupBusy = true; H.aiSetupMessage = '正在连接 DeepSeek，请稍等…';
+    const sent = App.raw({ t: 'host', action: 'configureAI', apiKey: key });
+    key = null;
+    if (!sent) { H.aiSetupBusy = false; H.aiSetupMessage = '连接已断开，请等待恢复后重新填写。'; }
+    render();
+    return;
+  }
   if (act === 'toggle-ai') return hostAct('setAI', { enabled: !(v.ai && v.ai.enabled) });
   if (act === 'test-ai') return hostAct('testAI');
   if (act === 'finish-early') {

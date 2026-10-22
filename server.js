@@ -19,16 +19,19 @@ const { attachWebSocket } = require('./lib/ws');
 const tunnel = require('./lib/tunnel');
 const { loadAIConfig, createDeepSeekClient } = require('./lib/deepseek');
 const { createAIStoryteller } = require('./lib/ai-storyteller');
+const { validateKey, configFromKey, writeAISettings, connectionError } = require('./lib/ai-settings');
 
 const PORT = Number(process.env.PORT) || 3000;
 const WANT_TUNNEL = process.env.TUNNEL === '1' || process.argv.includes('--tunnel');
 const ROOT = __dirname;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const STATE_FILE = process.env.ROOM_FILE || path.join(ROOT, 'room.json');
+const AI_CONFIG_FILE = process.env.AI_CONFIG_FILE || path.join(ROOT, 'ai.local.json');
 let joinUrl = null;
 let localJoinUrl = null;
 let ai = null;
 let aiTestRunning = false;
+let aiSetupState = { status: 'idle', message: '' };
 
 /* ------------------------------ 房间与持久化 ------------------------------ */
 
@@ -152,8 +155,8 @@ game.subscribe((evt) => {
   scheduleSave();
 });
 
-const aiConfig = loadAIConfig({ filePath: path.join(ROOT, 'ai.local.json'), env: process.env });
-const aiClient = createDeepSeekClient(aiConfig);
+let aiConfig = loadAIConfig({ filePath: AI_CONFIG_FILE, env: process.env });
+let aiClient = createDeepSeekClient(aiConfig);
 ai = createAIStoryteller({ game, client: aiClient, configured: aiConfig.configured, configError: aiConfig.error });
 if (aiConfig.enabled) {
   const result = ai.setEnabled(true);
@@ -389,6 +392,7 @@ function handleHello(c, msg) {
     c.helloComplete = true;
     c.channel = 'public';
     sendTo(c.conn, { t: 'welcome', role: 'host', now: Date.now() });
+    sendTo(c.conn, { t: 'ai-setup', ...aiSetupState, allowed: !!c.canConfigureAI });
     return syncClient(c, since);
   }
 
@@ -455,9 +459,25 @@ function handleHost(c, msg) {
       r = game.setInfoMode(msg.mode);
       break;
     case 'setAI':
-      if (typeof msg.enabled !== 'boolean') r = { ok: false, error: 'AI 开关必须是 true 或 false' };
-      else r = ai.setEnabled(msg.enabled);
+      if (aiTestRunning) r = { ok: false, error: '正在连接 DeepSeek，请稍等。' };
+      else if (typeof msg.enabled !== 'boolean') r = { ok: false, error: 'AI 开关必须是 true 或 false' };
+      else {
+        const previous = ai.status().enabled;
+        r = ai.setEnabled(msg.enabled);
+        if (!r.ok) break;
+        aiConfig.enabled = msg.enabled;
+        try {
+          if (aiConfig.managedByUI) writeAISettings(AI_CONFIG_FILE, { ...aiConfig, enabled: msg.enabled });
+          sendTo(c.conn, { t: 'ai-settings', enabled: msg.enabled, remembered: aiConfig.managedByUI,
+            message: (msg.enabled ? 'AI 已启用' : 'AI 已暂停') + (aiConfig.managedByUI ? '，下次启动会记住这个设置。' : '。') });
+        } catch {
+          if (msg.enabled) { ai.setEnabled(previous); aiConfig.enabled = previous; }
+          r = { ok: false, error: msg.enabled ? '设置未能保存，已保持原来的开关状态。请检查平板存储空间后再试。' : '本次已暂停 AI，但设置未保存；下次启动请先确认开关。请检查平板存储空间。' };
+        }
+      }
       break;
+    case 'configureAI':
+      return configureAI(c, msg.apiKey);
     case 'testAI':
       return testAIConnection(c);
     case 'beginNight':
@@ -517,13 +537,57 @@ async function testAIConnection(c) {
     await aiClient.choose({ view: {}, request: { purpose: 'connection-test' }, options: [{ id: 'test-ok', cards: [{ title: '连接测试', lines: ['接口连通'] }] }] });
     sendTo(c.conn, { t: 'ai-test', message: 'DeepSeek 连接测试成功，可以启用 AI。' });
   } catch (e) {
-    const message = e.code === 'AI_HTTP_401' ? '认证失败，请检查密钥。' : e.code === 'AI_HTTP_402' ? '账户余额不足。' : e.code === 'AI_HTTP_429' ? '接口限流，请稍后再试。' : '测试失败，请检查网络、接口地址和模型配置。';
+    const message = connectionError(e);
     sendTo(c.conn, { t: 'ai-test', message });
   } finally { aiTestRunning = false; }
 }
 
-attachWebSocket(server, (conn) => {
-  const c = { conn, channel: null, role: 'guest', seat: null, helloComplete: false };
+function setupNotice(status, message) {
+  aiSetupState = { status, message };
+  for (const host of clients) if (host.role === 'host') {
+    sendTo(host.conn, { t: 'ai-setup', ...aiSetupState, allowed: !!host.canConfigureAI });
+  }
+}
+
+async function configureAI(c, value) {
+  if (!c.canConfigureAI) return sendTo(c.conn, { t: 'ai-setup', status: 'error', allowed: false,
+    message: '请在平板本机页面或 HTTPS 房主页面填写密钥。平板本机地址见启动时显示的链接。' });
+  if (aiTestRunning) return sendTo(c.conn, { t: 'ai-setup', status: 'working', allowed: true, message: '正在连接，请稍等，不用重复点击。' });
+  const key = validateKey(value);
+  if (!key) return sendTo(c.conn, { t: 'ai-setup', status: 'error', allowed: true, message: '请粘贴完整的 API Key，不要输入代码、网址或加入空格。' });
+  const candidate = configFromKey(key, process.env);
+  if (!candidate.configured) return sendTo(c.conn, { t: 'ai-setup', status: 'error', allowed: true, message: '服务端的 AI 地址或模型设置有误，请联系维护者。' });
+  aiTestRunning = true;
+  setupNotice('working', '正在连接 DeepSeek，请稍等…');
+  try {
+    const client = createDeepSeekClient(candidate);
+    await client.choose({ view: {}, request: { purpose: 'connection-test' }, options: [{ id: 'test-ok', cards: [{ title: '连接测试', lines: ['接口连通'] }] }] });
+    writeAISettings(AI_CONFIG_FILE, candidate);
+    // 只有验证和保存都成功后替换旧连接；旧请求取消并按引擎回退。
+    ai.dispose();
+    aiConfig = candidate; aiClient = client;
+    ai = createAIStoryteller({ game, client, configured: true });
+    ai.setEnabled(true);
+    setupNotice('success', 'DeepSeek 已连接并启用，设置已保存。下次启动会自动读取。');
+    game.emit();
+  } catch (e) {
+    setupNotice('error', e.message === 'AI_SAVE_FAILED'
+      ? '连接成功，但设置未保存。请检查平板存储空间后再试；原来的设置仍保留。'
+      : connectionError(e) + ' 本次密钥未保存，原来的设置仍保留。');
+  } finally { aiTestRunning = false; }
+}
+
+function secureSetupConnection(req) {
+  if (!req) return false;
+  const peer = req.socket && req.socket.remoteAddress;
+  const loopback = ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(peer);
+  let localHost = false;
+  try { localHost = ['localhost', '127.0.0.1', '[::1]'].includes(new URL('http://' + req.headers.host).hostname); } catch { /* 无效主机不能提交密钥。 */ }
+  return !!(req.socket?.encrypted || (loopback && (localHost || req.headers['x-forwarded-proto'] === 'https')));
+}
+
+attachWebSocket(server, (conn, req) => {
+  const c = { conn, channel: null, role: 'guest', seat: null, helloComplete: false, canConfigureAI: secureSetupConnection(req) };
   clients.add(c);
   conn.on('close', () => {
     clients.delete(c);

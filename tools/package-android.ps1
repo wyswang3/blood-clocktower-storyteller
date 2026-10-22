@@ -12,7 +12,7 @@ New-Item -ItemType Directory -Force -Path $artifactDir | Out-Null
 $archivePath = [System.IO.Path]::GetFullPath((Join-Path $artifactDir $OutputName))
 if (-not $archivePath.StartsWith($artifactDir + [System.IO.Path]::DirectorySeparatorChar)) { throw '输出目录不合法' }
 $tempArchive = $archivePath + '.' + [Guid]::NewGuid().ToString('N') + '.tmp'
-$files = @('server.js','package.json','start-android.sh','README.md','AGENTS.md','先读我.html','DeepSeek配置.md','DeepSeek配置.html','安卓平板使用.md','说书人设计.md','说书人接口.md','技术路线.md','远程连接.md','dev.md','技能判定.md','配板指南.md','修复验证_20261022.md','AI接入验证_20261022.md','官方规则核对验证_20261022.md','官方规则核对验证_20261022.html','ai.config.example.json')
+$files = @('server.js','package.json','start-android.sh','README.md','AGENTS.md','先读我.html','DeepSeek配置.md','DeepSeek配置.html','安卓平板使用.md','说书人设计.md','说书人接口.md','技术路线.md','远程连接.md','dev.md','技能判定.md','配板指南.md','修复验证_20261022.md','AI接入验证_20261022.md','官方规则核对验证_20261022.md','官方规则核对验证_20261022.html','易用性更新验证_20261022.md','易用性更新验证_20261022.html','ai.config.example.json')
 $folders = @('engine','lib','public','docs')
 if ($IncludeTests) { $folders += @('tests','tools','deploy'); $files += @('.gitignore','.gitattributes') }
 foreach ($folder in $folders) {

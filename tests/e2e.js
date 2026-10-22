@@ -15,6 +15,7 @@ const http = require('node:http');
 const ROOT = path.join(__dirname, '..');
 const PORT = 3888 + Math.floor(Math.random() * 100);
 const ROOM_FILE = path.join(ROOT, `.room-e2e-${PORT}.json`);
+const AI_CONFIG_FILE = path.join(ROOT, `.room-e2e-ai-${PORT}.json`);
 const PIN = '4321';
 const URL = `ws://127.0.0.1:${PORT}/ws`;
 
@@ -123,7 +124,7 @@ async function main() {
     req.on('end', () => {
       try {
         aiCalls++;
-        aiAuthOK = aiAuthOK && req.headers.authorization === 'Bearer e2e-private-test-key' && req.url === '/chat/completions';
+        aiAuthOK = aiAuthOK && ['Bearer e2e-private-test-key', 'Bearer e2e-ui-private-key'].includes(req.headers.authorization) && req.url === '/chat/completions';
         const payload = JSON.parse(raw);
         const input = JSON.parse(payload.messages[1].content);
         res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -134,12 +135,14 @@ async function main() {
   await new Promise((resolve) => fakeAPI.listen(0, '127.0.0.1', resolve));
   const apiPort = fakeAPI.address().port;
   if (fs.existsSync(ROOM_FILE)) fs.unlinkSync(ROOM_FILE);
-  const child = spawn(process.execPath, ['server.js'], {
+  if (fs.existsSync(AI_CONFIG_FILE)) fs.unlinkSync(AI_CONFIG_FILE);
+  const startServer = () => spawn(process.execPath, ['server.js'], {
     cwd: ROOT,
-    env: { ...process.env, PORT: String(PORT), ROOM_FILE, HOST_PIN: PIN, TUNNEL: '0', PUBLIC_URL: 'https://room.example.test', AI_ENABLED: '0', DEEPSEEK_API_KEY: 'e2e-private-test-key', DEEPSEEK_BASE_URL: `http://127.0.0.1:${apiPort}`, DEEPSEEK_MODEL: 'deepseek-flash' },
+    env: { ...process.env, PORT: String(PORT), ROOM_FILE, AI_CONFIG_FILE, HOST_PIN: PIN, TUNNEL: '0', PUBLIC_URL: 'https://room.example.test', AI_ENABLED: '0', DEEPSEEK_API_KEY: 'e2e-private-test-key', DEEPSEEK_BASE_URL: `http://127.0.0.1:${apiPort}`, DEEPSEEK_MODEL: 'deepseek-flash' },
     stdio: 'ignore',
     windowsHide: true,
   });
+  let child = startServer();
   let failed = false;
   try {
     await waitHealth();
@@ -162,6 +165,17 @@ async function main() {
     host2.send({ t: 'host', action: 'testAI' });
     await host2.wait((m) => m.t === 'ai-test' && /测试成功/.test(m.message));
     check(aiCalls === 1 && host2.view.phase === 'lobby', '房主可以测试 API 连接，不启动对局');
+    host2.send({ t: 'host', action: 'configureAI', apiKey: 'e2e-ui-private-key' });
+    await host2.wait((m) => m.t === 'ai-setup' && m.status === 'success');
+    await host2.wait((m) => m.view && m.view.ai && m.view.ai.enabled);
+    check(aiCalls === 2, '输入一次密钥后自动测试、保存并启用，只增加一次测试请求');
+    const savedAI = JSON.parse(fs.readFileSync(AI_CONFIG_FILE, 'utf8'));
+    check(savedAI.apiKey === 'e2e-ui-private-key' && savedAI.enabled && savedAI.managedByUI, '密钥和自动启用设置仅保存在私密配置文件');
+    check((await fetch(`http://127.0.0.1:${PORT}/ai.local.json`)).status === 404, '私密密钥文件不能通过网页读取');
+    check(!JSON.stringify(host2.queue).includes('e2e-ui-private-key'), '房主响应也不会回显密钥');
+    host2.queue = [];
+    host2.send({ t: 'host', action: 'setAI', enabled: false });
+    await host2.wait((m) => m.t === 'ai-settings' && !m.enabled);
     const probeCalls = aiCalls;
 
     // 只测试说书人协议，不接入任何 AI；成功认证和未 hello 的连接跨过同一个 10 秒门槛。
@@ -378,6 +392,26 @@ async function main() {
     check(host2.view.finalRoles.length === 7, '提前结束后全桌亮牌');
     storyteller.close();
 
+    host2.queue = [];
+    host2.send({ t: 'host', action: 'setAI', enabled: false });
+    await host2.wait((m) => m.t === 'ai-settings' && !m.enabled);
+    check(JSON.parse(fs.readFileSync(AI_CONFIG_FILE, 'utf8')).enabled === false, '暂停状态已经保存到私密配置');
+    await sleep(500);
+    const stopped = new Promise((resolve) => child.once('exit', resolve)); child.kill(); await stopped;
+    child = startServer(); await waitHealth();
+    const restoredHost = await new Client('restored-host').ready();
+    restoredHost.send({ t: 'hello', role: 'host', pin: PIN }); await restoredHost.wait((m) => m.t === 'sync');
+    check(restoredHost.view.ai.configured && !restoredHost.view.ai.enabled, '重启自动加载保存的密钥，并保留之前的暂停');
+    restoredHost.send({ t: 'host', action: 'setAI', enabled: true });
+    await restoredHost.wait((m) => m.t === 'ai-settings' && m.enabled);
+    await sleep(500);
+    const stoppedAgain = new Promise((resolve) => child.once('exit', resolve)); child.kill(); await stoppedAgain;
+    child = startServer(); await waitHealth();
+    const automatic = await new Client('automatic-host').ready(); automatic.send({ t: 'hello', role: 'host', pin: PIN });
+    await automatic.wait((m) => m.t === 'sync');
+    check(automatic.view.ai.enabled, '开启后再次重启会自动启用，无需重填密钥或重启配置流程');
+    automatic.close(); restoredHost.close();
+
     console.log('\nE2E 全部通过');
   } catch (e) {
     failed = true;
@@ -392,6 +426,7 @@ async function main() {
     } catch {
       /* ignore */
     }
+    try { fs.unlinkSync(AI_CONFIG_FILE); } catch { /* 仅清理本测试创建的私密配置。 */ }
     if (!failed) process.exit(0);
   }
 }

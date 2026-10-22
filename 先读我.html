@@ -1,5 +1,5 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>血染钟楼 · 说明入口</title><style>:root{color-scheme:light}*{box-sizing:border-box}body{margin:0;background:#f3f5f9;color:#202b3b;font:16px/1.85 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1000px;margin:30px auto;padding:36px 46px;background:white;border:1px solid #dfe5ee;border-radius:16px}nav{font-size:14px;color:#627086;border-bottom:1px solid #e4e8ef;padding-bottom:14px;margin-bottom:24px}nav a{margin-right:16px}a{color:#245fa9;text-decoration:underline;text-underline-offset:3px}h1{font-size:30px;line-height:1.4;color:#142f53;margin:0 0 18px}h2{font-size:22px;line-height:1.5;margin:34px 0 12px;border-bottom:1px solid #e2e8f0;padding-bottom:8px}h3{font-size:18px;margin-top:24px}p{margin:12px 0}li{margin:6px 0}code{font:14px/1.65 ui-monospace,Consolas,monospace;background:#edf1f7;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{background:#182a40;color:#f1f5fc;padding:17px 20px;border-radius:10px;overflow:auto;white-space:pre;line-height:1.65}pre code{background:none;color:inherit;padding:0;overflow-wrap:normal}blockquote{margin:18px 0;padding:10px 18px;border-left:4px solid #819ab9;background:#f0f5fb;color:#405670}.table-wrap{overflow:auto;margin:18px 0}table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.7}th,td{border:1px solid #dce3ec;text-align:left;vertical-align:top;padding:10px 13px}th{background:#edf2f8;white-space:nowrap}tr:nth-child(even){background:#fafbfd}.cards{display:grid;gap:16px;margin:25px 0}.card{display:block;border:1px solid #d7e1ed;border-radius:12px;padding:20px 24px;text-decoration:none;background:#fafcfe}.card strong{display:block;font-size:20px;margin-bottom:4px}.card span{color:#52647b}.meta{color:#617089;font-size:14px}footer{margin-top:35px;padding-top:15px;border-top:1px solid #dfe5ee;font-size:13px;color:#6d7b8d}@media(max-width:650px){body{background:white}main{margin:0;padding:22px 18px;border:0;border-radius:0}h1{font-size:26px}nav a{display:inline-block;margin-bottom:6px}th,td{min-width:100px}pre{padding:12px;font-size:13px}}@media print{@page{size:A4;margin:16mm}body{background:white;font-size:11pt}main{max-width:none;margin:0;padding:0;border:0}nav{display:none}h2,h3{break-after:avoid}table,pre{break-inside:avoid}a{color:inherit}.table-wrap{overflow:visible}pre{white-space:pre-wrap}footer{font-size:9pt}}</style></head><body><main><nav><a href="#top">说明首页</a><span>血染钟楼 · v0.3.0</span></nav><div id="top"></div><h1>血染钟楼 · 使用与维护说明</h1><p class="meta">版本 0.3.0 · 2026-10-22 · 安卓平板 + 每人一部手机</p><p>本文件已包含四份完整手册、AI 配置与本轮验证记录，点目录即可跳转，可离线阅读。程序由平板上的 Termux 启动，游戏界面在浏览器打开。</p><div class="cards"><a class="card" href="#owner"><strong>平板主人</strong><span>从压缩包开始：安装、配置 AI、测试连接和正式开局。</span></a><a class="card" href="#players"><strong>所有玩家</strong><span>加入房间、看身份、夜间行动、提名投票和掉线处理。</span></a><a class="card" href="#technical"><strong>Agent 与技术人员</strong><span>当前实现、验证证据、目标、待办和后续维护流程。</span></a><a class="card" href="#rules-audit"><strong>规则核对</strong><span>22 角色、当前官方夜序、胜负、操作约定与测试依据。</span></a></div><p><a href="#ai-config">DeepSeek 配置详解</a></p><p>首次安装环境、各用不同网络开局，以及 AI 调用需要互联网。默认不开启 AI，填好密钥后可从平板测试并启用。</p><p>当前已完成本地模拟与接口测试；真实 DeepSeek 账户、安卓设备和公网运营商链路仍需按指南验收。</p><section id="owner" style="border-top:3px solid #dfe7f1;margin-top:48px;padding-top:24px"><p><a href="#top">返回目录</a></p><h2>平板主人的安装与测试指南</h2>
-<p>适用版本：0.3.0｜更新日期：2026-10-22｜设备：安卓平板。</p>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>血染钟楼 · 说明入口</title><style>:root{color-scheme:light}*{box-sizing:border-box}body{margin:0;background:#f3f5f9;color:#202b3b;font:16px/1.85 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1000px;margin:30px auto;padding:36px 46px;background:white;border:1px solid #dfe5ee;border-radius:16px}nav{font-size:14px;color:#627086;border-bottom:1px solid #e4e8ef;padding-bottom:14px;margin-bottom:24px}nav a{margin-right:16px}a{color:#245fa9;text-decoration:underline;text-underline-offset:3px}h1{font-size:30px;line-height:1.4;color:#142f53;margin:0 0 18px}h2{font-size:22px;line-height:1.5;margin:34px 0 12px;border-bottom:1px solid #e2e8f0;padding-bottom:8px}h3{font-size:18px;margin-top:24px}p{margin:12px 0}li{margin:6px 0}code{font:14px/1.65 ui-monospace,Consolas,monospace;background:#edf1f7;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{background:#182a40;color:#f1f5fc;padding:17px 20px;border-radius:10px;overflow:auto;white-space:pre;line-height:1.65}pre code{background:none;color:inherit;padding:0;overflow-wrap:normal}blockquote{margin:18px 0;padding:10px 18px;border-left:4px solid #819ab9;background:#f0f5fb;color:#405670}.table-wrap{overflow:auto;margin:18px 0}table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.7}th,td{border:1px solid #dce3ec;text-align:left;vertical-align:top;padding:10px 13px}th{background:#edf2f8;white-space:nowrap}tr:nth-child(even){background:#fafbfd}.cards{display:grid;gap:16px;margin:25px 0}.card{display:block;border:1px solid #d7e1ed;border-radius:12px;padding:20px 24px;text-decoration:none;background:#fafcfe}.card strong{display:block;font-size:20px;margin-bottom:4px}.card span{color:#52647b}.meta{color:#617089;font-size:14px}footer{margin-top:35px;padding-top:15px;border-top:1px solid #dfe5ee;font-size:13px;color:#6d7b8d}@media(max-width:650px){body{background:white}main{margin:0;padding:22px 18px;border:0;border-radius:0}h1{font-size:26px}nav a{display:inline-block;margin-bottom:6px}th,td{min-width:100px}pre{padding:12px;font-size:13px}}@media print{@page{size:A4;margin:16mm}body{background:white;font-size:11pt}main{max-width:none;margin:0;padding:0;border:0}nav{display:none}h2,h3{break-after:avoid}table,pre{break-inside:avoid}a{color:inherit}.table-wrap{overflow:visible}pre{white-space:pre-wrap}footer{font-size:9pt}}</style></head><body><main><nav><a href="#top">说明首页</a><span>血染钟楼 · v0.4.0</span></nav><div id="top"></div><h1>血染钟楼 · 使用与维护说明</h1><p class="meta">版本 0.4.0 · 2026-10-22 · 安卓平板 + 每人一部手机</p><p>本文件已包含四份完整手册、AI 配置与本轮验证记录，点目录即可跳转，可离线阅读。程序由平板上的 Termux 启动，游戏界面在浏览器打开。</p><div class="cards"><a class="card" href="#owner"><strong>平板主人</strong><span>从压缩包开始：安装、配置 AI、测试连接和正式开局。</span></a><a class="card" href="#players"><strong>所有玩家</strong><span>加入房间、看身份、夜间行动、提名投票和掉线处理。</span></a><a class="card" href="#technical"><strong>Agent 与技术人员</strong><span>当前实现、验证证据、目标、待办和后续维护流程。</span></a><a class="card" href="#rules-audit"><strong>规则核对</strong><span>22 角色、当前官方夜序、胜负、操作约定与测试依据。</span></a></div><p><a href="#ai-config">DeepSeek 配置详解</a></p><p>首次安装环境、各用不同网络开局，以及 AI 调用需要互联网。首次可以直接开局；点“连接 DeepSeek”填密钥后，会自动验证、保存并启用，以后会记住开关。</p><p>当前已完成本地模拟与接口测试；真实 DeepSeek 账户、安卓设备和公网运营商链路仍需按指南验收。</p><section id="owner" style="border-top:3px solid #dfe7f1;margin-top:48px;padding-top:24px"><p><a href="#top">返回目录</a></p><h2>平板主人的安装与测试指南</h2>
+<p>适用版本：0.4.0｜更新日期：2026-10-22｜设备：安卓平板。</p>
 <p>这台平板负责运行游戏和显示公共局面。你自己也可以拿手机参加游戏；平板操作不需要你知道其他人的身份。程序通过 Termux 启动，游戏界面在浏览器打开。</p>
 <h3>一、先准备这些</h3>
 <ul>
@@ -15,7 +15,7 @@
 <li>安装并打开 Termux。逐行复制执行：</li>
 </ol>
 <pre><code>pkg update
-pkg install nodejs-lts unzip nano
+pkg install nodejs-lts unzip
 termux-setup-storage</code></pre>
 <p>出现文件访问权限提示时允许。安装软件包时若询问是否继续，输入 <code>y</code> 并回车。</p>
 <ol start="3">
@@ -51,20 +51,15 @@ sh start-android.sh --tunnel</code></pre>
 </ol>
 <p><strong>手机不能使用 <code>127.0.0.1</code>，也不要分享带 <code>pin=</code> 的房主地址。</strong> 平板重启隧道后公网地址会改变，要重新分享。临时隧道的网络可用性需要现场确认；打不开时先尝试更换平板网络。</p>
 <p>备用方案：让大家连同一个 Wi-Fi 或热点，用平板的局域网地址加入。关闭 AI 的局域网模式在安装完成后不需要互联网。</p>
-<h3>五、配置和单独测试 DeepSeek</h3>
+<h3>五、连接 DeepSeek（点按钮即可）</h3>
 <ol start="1">
-<li>停止服务，在 Termux 执行：</li>
+<li>在平板大厅点 <strong>“连接 DeepSeek”</strong>。</li>
+<li>粘贴你准备好的 <strong>API Key（密钥）</strong>，点 <strong>“保存并连接”</strong>。只填密钥，不填网址或代码。</li>
+<li>等待“DeepSeek 已连接并启用，设置已保存”。程序已自动选好模型，不需要下载模型，也不需要编辑文件或重启。</li>
 </ol>
-<pre><code>cd ~/blood-clocktower
-cp ai.config.example.json ai.local.json
-nano ai.local.json</code></pre>
-<ol start="2">
-<li>只把 <code>apiKey</code> 后的空字符串填成你的密钥，其他内容可以保留。<code>enabled</code> 保持 <code>false</code>，方便每次手动启用。</li>
-<li>在 nano 中按 <code>Ctrl+O</code>、回车保存，<code>Ctrl+X</code> 退出。用原来的方式重启，例如 <code>sh start-android.sh --tunnel</code>。</li>
-<li>打开平板的“说书人操作”，点 <strong>“测试连接（1 次调用）”</strong>。这会向实际配置的服务发起一次请求，按服务商规则计费；测试不会发送对局身份，也不会开始游戏。</li>
-<li>看到“DeepSeek 连接测试成功”后，点“启用 AI”。如果失败，检查密钥、余额、模型名、接口地址和平板网络。</li>
-</ol>
-<p>“已配置”只代表读取到了配置；“测试成功”才表示这次 API 请求完成。模型默认 <code>deepseek-flash</code>，详细配置见 <a href="#ai-config">DeepSeek配置.md</a>。密钥只留在平板，不用发给玩家。</p>
+<p>这会发起一次小测试，按 DeepSeek 账户规则计费，但不发送对局身份、不开始游戏。没有密钥也可以先开局。</p>
+<p>以后启动自动读取设置；想不用 AI 就点“暂停 AI”，下次启动也会记住暂停。换密钥点“更换 DeepSeek 密钥”，新密钥失败不会覆盖原来的设置。</p>
+<p>若提示只能在本机或 HTTPS 页面填写，请在平板启动窗口用“本机（平板）”链接打开。手机玩家不用填密钥。详细故障说明见 <a href="#ai-config">连接 DeepSeek</a>。</p>
 <h3>六、聚会前的全员测试</h3>
 <p>请在正式玩的地点，至少完整走一夜：</p>
 <ol start="1">
@@ -83,11 +78,11 @@ nano ai.local.json</code></pre>
 <p>白天的“开始提名”“结束提名”、进入下一夜仍由平板操作。全桌确认不用继续时，可点“提前结束”，输入“好人”或“坏人”并再次确认；会立即亮牌。</p>
 <p>结束后回 Termux 按 <code>Ctrl+C</code>，对局保存在 <code>room.json</code>。再次启动会恢复；“重开一局”用于重新发牌。</p>
 <h3>八、升级、备份和常见问题</h3>
-<p>升级应在一局结束后，先停止服务、保留旧目录。可在 Termux 执行 <code>cp -a ~/blood-clocktower ~/blood-clocktower-backup-20261022</code>；后续换未使用过的备份名。尤其保留 <code>room.json</code> 与 <code>ai.local.json</code>，不要发群里。0.3.0 可读旧存档，但不能撤回旧版已发信息；升级后另开一局、先做小测试。最新运行包也可从私密 GitHub 仓库的 Releases 下载，需有权限的账号登录。</p>
+<p>升级应在一局结束后，先停止服务、保留旧目录。可在 Termux 执行 <code>cp -a ~/blood-clocktower ~/blood-clocktower-backup-20261022</code>；后续换未使用过的备份名。尤其保留 <code>room.json</code> 与 <code>ai.local.json</code>，不要发群里。0.4.0 可读旧存档，但不能撤回旧版已发信息；升级后另开一局、先做小测试。最新运行包也可从私密 GitHub 仓库的 Releases 下载，需有权限的账号登录。</p>
 <div class="table-wrap"><table><thead><tr><th>现象</th><th>先检查</th></tr></thead><tbody><tr><td>手机打不开链接</td><td>是否用了当前公网 <code>/player</code> 链接，是否误用了本机或旧隧道地址</td></tr><tr><td>平板能开、手机不能开</td><td>隧道是否就绪；局域网模式下是否同网、有设备隔离</td></tr><tr><td>切到浏览器后全部掉线</td><td>Termux 是否被省电或后台清理停止</td></tr><tr><td>无法自动识别平板 IP</td><td>共同局域网时从 Wi-Fi 详情查看；公网模式等待隧道链接</td></tr><tr><td>提示端口被占用</td><td>是否已经有一个游戏服务在运行；先回原终端停止旧服务</td></tr><tr><td>AI 失败但游戏继续</td><td>已回退，先继续对局；休息时检查配置和网络</td></tr><tr><td>手机丢失座位</td><td>先回原浏览器和原链接，不要立即清数据或重开</td></tr></tbody></table></div>
 <p>遇到问题，记录发生步骤、时间、手机和平板系统版本、错误提示即可。截图不要带身份卡、PIN 或 API Key。</p></section>
 <section id="players" style="border-top:3px solid #dfe7f1;margin-top:48px;padding-top:24px"><p><a href="#top">返回目录</a></p><h2>玩家使用说明</h2>
-<p>适用版本：0.3.0｜更新日期：2026-10-22。</p>
+<p>适用版本：0.4.0｜更新日期：2026-10-22。</p>
 <p>平板放在桌中央显示公开局面，每个人的手机只接收自己的身份和操作。说书人负责主持与裁量；这一版由程序处理流程，可选 DeepSeek 帮助选择夜间情报。讨论和推理仍由你们自己进行。</p>
 <h3>一、加入这桌游戏</h3>
 <ol start="1">
@@ -104,6 +99,7 @@ nano ai.local.json</code></pre>
 <p><strong>酒鬼看到的也只会是一个镇民身份。</strong> 游戏中不会提醒“你是酒鬼”或“你中毒了”。信息可能因醉酒、中毒或角色登记而有误，需要结合规则推理；不是看到矛盾就说明程序出错。</p>
 <p>酒鬼没有他以为的镇民能力。酒鬼收到真信息是允许的，但并不代表他的镇民能力真的生效。</p>
 <h3>四、夜晚怎么操作</h3>
+<p>AI 由平板主人配置，你的手机不用填写密钥。僧侣按标准规则可连续两晚守护同一个人，不能守自己。</p>
 <ol start="1">
 <li>进入夜晚后，手机屏幕朝向自己，避免旁人看到。默认静音，不会公开叫某号玩家行动。</li>
 <li>轮到你时，手机会显示操作。需要选人就按要求选择，再确认；收到信息后点“我看到了”。</li>
@@ -137,17 +133,17 @@ nano ai.local.json</code></pre>
 <div class="table-wrap"><table><thead><tr><th>问题</th><th>你可以做什么</th></tr></thead><tbody><tr><td>没出现提名按钮</td><td>确认处于提名阶段、自己存活、今天还没提名且存在合法目标</td></tr><tr><td>不能选择某人</td><td>对方可能已被提名，或当前技能不允许该目标</td></tr><tr><td>轮不到自己</td><td>可能本来没有这次夜间行动，先看技能说明</td></tr><tr><td>换浏览器后没有座位</td><td>回原浏览器；不要反复抢别人的座位</td></tr><tr><td>掉线</td><td>回到原链接等重连；仍不行再请平板主人检查</td></tr><tr><td>AI 暂时不可用</td><td>程序会自动发情报，游戏可以继续</td></tr></tbody></table></div>
 <p>当前没有游戏内文字聊天室、语音识别或自动语音主持。“同一个房间”是指共同加入一桌；线下大家照常说话。如果分处不同地点，需要另外使用语音通话工具。</p></section>
 <section id="technical" style="border-top:3px solid #dfe7f1;margin-top:48px;padding-top:24px"><p><a href="#top">返回目录</a></p><h2>技术手册与进度管理</h2>
-<p>版本：0.3.0｜基线日期：2026-10-22｜维护对象：后续 agent 与技术人员。</p>
+<p>版本：0.4.0｜基线日期：2026-10-22｜维护对象：后续 agent 与技术人员。</p>
 <p>本文是当前实现、证据和待办的主入口。功能状态以代码与本轮验证为准；早期《技术路线.md》《说书人设计.md》保留目标背景，不得把其中的规划当成已经实现。</p>
 <h3>1. 产品目标与当前范围</h3>
 <p>目标：几个朋友线下玩《血染钟楼》，无人需要专职退出当说书人。安卓平板同时运行服务器和公共屏，每人一部手机。朋友可各用流量或 Wi-Fi，加入同一个公网房间；也保留共同局域网方案。</p>
 <p>最终说书人应能在合法范围内主动安排信息、观察局势、照顾新手、引导讨论、营造气氛和解释复盘。后续主模型计划使用 DeepSeek。维持可解释性和推理空间，不能靠改写已发生事实强行平衡胜负。</p>
-<p>当前实现暗流涌动 22 角色、5–15 人、单进程单房间。0.3.0 完成当前范围的规则核对与修复，详情见 <a href="#rules-audit">逐角色核对</a>。0.2.0 起已有夜间信息候选选择；完整 AI 主持、账号系统、原生游戏 APK、游戏内聊天和语音尚未实现。</p>
+<p>当前实现暗流涌动 22 角色、5–15 人、单进程单房间。0.3.0 完成当前范围的规则核对与修复，详情见 <a href="#rules-audit">逐角色核对</a>。0.4.0 新增平板填写密钥后自动连接、保存和热加载；0.2.0 起已有夜间信息候选选择；完整 AI 主持、账号系统、原生游戏 APK、游戏内聊天和语音尚未实现。</p>
 <h3>2. 状态定义</h3>
 <div class="table-wrap"><table><thead><tr><th>状态</th><th>含义</th></tr></thead><tbody><tr><td>已实现并自动验证</td><td>有代码和对应测试证据</td></tr><tr><td>已实现，待真机/外部验证</td><td>本地逻辑已验证，但没有目标设备或真实服务证据</td></tr><tr><td>规划</td><td>尚无可交付的完整实现</td></tr><tr><td>待审计</td><td>当前有策略或实现，需要核对完整规则与边界</td></tr></tbody></table></div>
 <p>“配置完成”“模拟接口通过”“真实账号联通”“安卓全员可用”是四个不同结论，不能混用。</p>
 <h3>3. 功能清单</h3>
-<div class="table-wrap"><table><thead><tr><th>功能</th><th>当前状态</th><th>证据 / 限制</th></tr></thead><tbody><tr><td>公共平板与私密手机界面</td><td>已实现并自动验证</td><td>渲染、交互与本地 HTTP/WebSocket 测试</td></tr><tr><td>发牌、身份确认、夜间选人、白天提名投票</td><td>已实现并自动验证</td><td>逐角色核对、规则专项、整局、模拟和联机；登记组合非穷举</td></tr><tr><td>酒鬼只伪装未在场镇民</td><td>已实现并自动验证</td><td>两条发牌路径共用校验，5–15 人、多种子覆盖</td></tr><tr><td>三人残局、红唇门槛、幽灵票修复</td><td>已实现并自动验证</td><td>边界、超时、恢复、进度与票型回归</td></tr><tr><td>每日提名限制、自提禁止</td><td>已实现并自动验证</td><td>用户确认的本桌约定；次数持久化、隔日重置</td></tr><tr><td>房主手动提前宣布</td><td>已实现并自动验证</td><td>指定胜方与二次确认；普通玩家不能调用</td></tr><tr><td>断线恢复、JSON 存档</td><td>已实现并自动验证</td><td>座位 token、事件游标、旧投票结构兼容</td></tr><tr><td>安卓启动脚本和网卡异常兜底</td><td>已实现，待安卓真机验证</td><td>无 Android shell、热点和后台存活的真机证据</td></tr><tr><td>公网隧道和房间链接发布/撤回</td><td>已实现，待真实公网验证</td><td>受控隧道替身及本地链接传播测试，不代表运营商可达</td></tr><tr><td>DeepSeek 请求适配和私密候选选择</td><td>已实现并自动验证</td><td>本地模拟 HTTP API 联通，真实密钥未联调</td></tr><tr><td>平板 API 连通测试按钮</td><td>已实现并自动验证</td><td>一次请求、不发送对局数据；需配置后使用</td></tr><tr><td>AI 超时回退、去重、取消、迟到结果隔离</td><td>已实现并自动验证</td><td>无重试收费循环；12 秒请求上限、15 秒引擎兜底</td></tr><tr><td>公开主持、氛围文案、规则问答</td><td>规划</td><td>当前无独立公开模型调用</td></tr><tr><td>语音、自动听讨论、游戏内聊天室</td><td>规划</td><td>当前没有；不同地点需另行语音工具</td></tr><tr><td>角色登记与特殊能力</td><td>标准机制已核对并自动验证</td><td>增加醉毒、死后登记、镇长转移与传位优先；自动策略与完整 AI 裁量分开</td></tr><tr><td>白天以后再确定酒鬼</td><td>实验房规规划</td><td>不进入默认标准模式，不得静默改身份</td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>功能</th><th>当前状态</th><th>证据 / 限制</th></tr></thead><tbody><tr><td>公共平板与私密手机界面</td><td>已实现并自动验证</td><td>渲染、交互与本地 HTTP/WebSocket 测试</td></tr><tr><td>发牌、身份确认、夜间选人、白天提名投票</td><td>已实现并自动验证</td><td>逐角色核对、规则专项、整局、模拟和联机；登记组合非穷举</td></tr><tr><td>酒鬼只伪装未在场镇民</td><td>已实现并自动验证</td><td>两条发牌路径共用校验，5–15 人、多种子覆盖</td></tr><tr><td>三人残局、红唇门槛、幽灵票修复</td><td>已实现并自动验证</td><td>边界、超时、恢复、进度与票型回归</td></tr><tr><td>每日提名限制、自提禁止</td><td>已实现并自动验证</td><td>用户确认的本桌约定；次数持久化、隔日重置</td></tr><tr><td>房主手动提前宣布</td><td>已实现并自动验证</td><td>指定胜方与二次确认；普通玩家不能调用</td></tr><tr><td>断线恢复、JSON 存档</td><td>已实现并自动验证</td><td>座位 token、事件游标、旧投票结构兼容</td></tr><tr><td>安卓启动脚本和网卡异常兜底</td><td>已实现，待安卓真机验证</td><td>无 Android shell、热点和后台存活的真机证据</td></tr><tr><td>公网隧道和房间链接发布/撤回</td><td>已实现，待真实公网验证</td><td>受控隧道替身及本地链接传播测试，不代表运营商可达</td></tr><tr><td>DeepSeek 请求适配和私密候选选择</td><td>已实现并自动验证</td><td>本地模拟 HTTP API 联通，真实密钥未联调</td></tr><tr><td>平板一键连接、保存与自动加载</td><td>已实现并自动验证</td><td>密码框、权限、空上下文测试、原子保存、热加载、失败保留旧设置、两次服务重启</td></tr><tr><td>AI 超时回退、去重、取消、迟到结果隔离</td><td>已实现并自动验证</td><td>无重试收费循环；12 秒请求上限、15 秒引擎兜底</td></tr><tr><td>公开主持、氛围文案、规则问答</td><td>规划</td><td>当前无独立公开模型调用</td></tr><tr><td>语音、自动听讨论、游戏内聊天室</td><td>规划</td><td>当前没有；不同地点需另行语音工具</td></tr><tr><td>角色登记与特殊能力</td><td>标准机制已核对并自动验证</td><td>增加醉毒、死后登记、镇长转移与传位优先；自动策略与完整 AI 裁量分开</td></tr><tr><td>白天以后再确定酒鬼</td><td>实验房规规划</td><td>不进入默认标准模式，不得静默改身份</td></tr></tbody></table></div>
 <h3>4. 架构与数据流</h3>
 <pre><code>手机 / 平板浏览器
   → HTTP 页面与 WebSocket 消息
@@ -161,13 +157,13 @@ nano ai.local.json</code></pre>
 <p>跨网络路径：浏览器 → 临时公网 HTTPS 地址 → cloudflared → 平板本机 HTTP 服务。隧道只提供可达性，不替代座位认证。平板本机访问地址与手机分享地址分开；公网地址不是房间存档的一部分。</p>
 <p>服务端使用 Node 18+ 内置模块，无第三方运行依赖。Termux 使用官方 <code>nodejs-lts</code> 包。端到端测试使用内置 WebSocket，建议 Node 22+，本轮为 Node 24.20.0；最低运行版本不等于测试工具最低版本。</p>
 <h3>5. 文件导航</h3>
-<div class="table-wrap"><table><thead><tr><th>路径</th><th>职责</th></tr></thead><tbody><tr><td><code>server.js</code></td><td>HTTP、WebSocket、房主操作、房间链接、AI 适配实例与存档</td></tr><tr><td><code>engine/setup.js</code></td><td>配比、随机发牌、指定板子、统一酒鬼假身份入口</td></tr><tr><td><code>engine/game.js</code></td><td>生命周期、事件、投票、AI 请求与私密决定存档</td></tr><tr><td><code>engine/night.js</code></td><td>夜序、能力执行、信息卡、<code>informationOptions</code> 候选生成</td></tr><tr><td><code>engine/day.js</code></td><td>计票、红唇接管、处决和胜负；投票资格兼容函数</td></tr><tr><td><code>engine/state.js</code></td><td>公共、单座位、说书人视图；禁止私密字段溢入公共视图</td></tr><tr><td><code>lib/deepseek.js</code></td><td>配置解析、端点校验、JSON 请求、超时和响应校验</td></tr><tr><td><code>lib/ai-storyteller.js</code></td><td>请求去重、生命周期取消、候选选择、回退、私密记录</td></tr><tr><td><code>lib/ws.js</code> / <code>lib/tunnel.js</code></td><td>WebSocket 最小实现 / 可选 cloudflared 进程</td></tr><tr><td><code>public/host.js</code> / <code>player.js</code> / <code>common.js</code></td><td>平板、手机、连接恢复与公共 UI</td></tr><tr><td><code>ai.config.example.json</code></td><td>可公开模板，密钥为空</td></tr><tr><td><code>ai.local.json</code></td><td>用户私密配置，不进源码交付包或公开网页</td></tr><tr><td><code>room.json</code></td><td>真实身份、token、对局和裁量记录，必须按私密数据处理</td></tr><tr><td><code>tests/</code></td><td>单元、专项规则、官方夜序快照、接口、渲染、模拟和本地端到端</td></tr><tr><td><code>docs/</code></td><td>三类说明；Markdown 为编辑源，HTML 为阅读版</td></tr><tr><td><code>tools/build-docs.js</code></td><td>更新 HTML 阅读版和根目录阅读入口</td></tr><tr><td><code>tools/package-android.ps1</code></td><td>Windows 上按白名单打包，并逐文件核验哈希</td></tr></tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>路径</th><th>职责</th></tr></thead><tbody><tr><td><code>server.js</code></td><td>HTTP、WebSocket、房主操作、房间链接、AI 适配实例与存档</td></tr><tr><td><code>engine/setup.js</code></td><td>配比、随机发牌、指定板子、统一酒鬼假身份入口</td></tr><tr><td><code>engine/game.js</code></td><td>生命周期、事件、投票、AI 请求与私密决定存档</td></tr><tr><td><code>engine/night.js</code></td><td>夜序、能力执行、信息卡、<code>informationOptions</code> 候选生成</td></tr><tr><td><code>engine/day.js</code></td><td>计票、红唇接管、处决和胜负；投票资格兼容函数</td></tr><tr><td><code>engine/state.js</code></td><td>公共、单座位、说书人视图；禁止私密字段溢入公共视图</td></tr><tr><td><code>lib/deepseek.js</code></td><td>配置解析、端点校验、JSON 请求、超时和响应校验</td></tr><tr><td><code>lib/ai-settings.js</code></td><td>图形配置输入校验、原子保存、中文错误与默认模型</td></tr><tr><td><code>lib/ai-storyteller.js</code></td><td>请求去重、生命周期取消、候选选择、回退、私密记录</td></tr><tr><td><code>lib/ws.js</code> / <code>lib/tunnel.js</code></td><td>WebSocket 最小实现 / 可选 cloudflared 进程</td></tr><tr><td><code>public/host.js</code> / <code>player.js</code> / <code>common.js</code></td><td>平板、手机、连接恢复与公共 UI</td></tr><tr><td><code>ai.config.example.json</code></td><td>可公开模板，密钥为空</td></tr><tr><td><code>ai.local.json</code></td><td>用户私密配置，不进源码交付包或公开网页</td></tr><tr><td><code>room.json</code></td><td>真实身份、token、对局和裁量记录，必须按私密数据处理</td></tr><tr><td><code>tests/</code></td><td>单元、专项规则、官方夜序快照、接口、渲染、模拟和本地端到端</td></tr><tr><td><code>docs/</code></td><td>三类说明；Markdown 为编辑源，HTML 为阅读版</td></tr><tr><td><code>tools/build-docs.js</code></td><td>更新 HTML 阅读版和根目录阅读入口</td></tr><tr><td><code>tools/package-android.ps1</code></td><td>Windows 上按白名单打包，并逐文件核验哈希</td></tr></tbody></table></div>
 <h3>6. DeepSeek 配置和协议</h3>
-<p>本机配置见 <a href="#ai-config">DeepSeek配置.md</a>。环境变量优先：<code>DEEPSEEK_API_KEY</code>、<code>DEEPSEEK_BASE_URL</code>、<code>DEEPSEEK_MODEL</code>、<code>AI_TIMEOUT_MS</code>、<code>AI_ENABLED</code>。默认关闭，密钥有效配置后才允许从平板启用。默认模型 <code>deepseek-flash</code>，以本次查询官方文档为依据，不应永久硬编码模型可用性假设。</p>
+<p>普通用户见 <a href="#ai-config">连接 DeepSeek</a>，直接用大厅按钮。没有图形设置标志时环境变量优先：<code>DEEPSEEK_API_KEY</code>、<code>DEEPSEEK_BASE_URL</code>、<code>DEEPSEEK_MODEL</code>、<code>AI_TIMEOUT_MS</code>、<code>AI_ENABLED</code>。默认关闭，密钥有效配置后才允许从平板启用。默认模型 <code>deepseek-flash</code>，以本次查询官方文档为依据，不应永久硬编码模型可用性假设。</p>
 <p>请求：<code>POST {baseUrl}/chat/completions</code>，Bearer 认证、非流式、非思考模式、JSON 输出，最多 512 输出 token。普通端点要求 HTTPS；仅允许本机 HTTP 作为测试替身。</p>
 <p>模型输出：<code>{&quot;optionId&quot;:&quot;option-0&quot;,&quot;reason&quot;:&quot;私密的简短裁量依据&quot;}</code>。只使用通过验证的编号，实际卡片取自服务器候选；多余的模型卡片和身份字段不会被采用。无裁量空间时不调用服务商。</p>
 <p>房主 WebSocket 消息：<code>{t:&#39;host&#39;, action:&#39;setAI&#39;, enabled:true|false}</code>；单次连通测试为 <code>{t:&#39;host&#39;, action:&#39;testAI&#39;}</code>。均受房主 PIN 会话权限保护。测试发送空对局上下文，返回 <code>ai-test</code> 消息；不修改游戏。</p>
-<p><code>public.ai</code> 仅公开 <code>configured / enabled / state</code>。<code>room.aiDecisions</code> 保留最近 100 条私密记录。API Key、座位 token、房主 PIN 不进入模型请求；魔典会进入私密裁量请求，这是功能所需，不得把该上下文复用于未来的公开主持。</p>
+<p><code>public.ai</code> 仅公开 <code>configured / enabled / state</code>。<code>room.aiDecisions</code> 保留最近 100 条私密记录。API Key 仅用于认证头，不进入模型消息正文；座位 token、房主 PIN 不发送给模型。魔典进入私密裁量请求，不得复用于未来公开主持。</p>
 <p>候选由信息生成器采样去重，加入健康隐士/间谍每次互动可变化的登记；默认自动模式仍用固定合法策略，不穷举所有组合。镇长转移、传位和日间登记由引擎自动选，模型无权直接执行特殊效果。旧可信外部 <code>st-info</code> 协议允许自由卡片，与受约束的 DeepSeek 适配器是不同入口。</p>
 <h3>7. 必须守住的约束</h3>
 <ul>
@@ -181,10 +177,10 @@ nano ai.local.json</code></pre>
 <li>禁止根据旧设计稿直接实现白天改酒鬼、任意改红鲱鱼或改写既有事实。</li>
 </ul>
 <h3>8. 验证基线</h3>
-<p>0.3.0 验证基线：引擎 86 项、规则专项 62 项、AI 21 项、UI 31 项、入口 5 项、隧道 3 项，共 <strong>208 项</strong>；另验七人 100 局、五人 40 局、十二人 20 局与发牌至结束走查。最终通过结果和退出码以 <a href="#regression">本轮验证记录</a> 为准。</p>
-<p>本地端到端测试启动真实游戏服务、七个模拟手机、平板、说书人协议连接及一个模拟 DeepSeek HTTP 服务，验证独立 API 测试、夜间真实 HTTP 请求、私密信息隔离、投票、重连、十秒认证超时和房主权限。它没有访问真实 DeepSeek，没有产生真实 API 费用。</p>
-<p>常规入口：<code>npm test</code>。无 npm 的环境可逐个执行对应测试文件；Windows 受限环境可能无法启动子进程，应使用允许启动本地测试服务的环境，不能把权限失败误报为功能通过。</p>
-<p>真实 DeepSeek、安卓 shell/浏览器/后台策略、不同运营商公网链路待验。证据见本轮验证记录、历史 <code>AI接入验证_20261022.md</code> 和 <code>artifacts/rules-*.log</code>。</p>
+<p>0.4.0：引擎 86 项、规则专项 63 项、AI 21 项、设置持久化 9 项、UI 36 项、入口与配置权限 12 项、隧道 3 项，共 <strong>230 项通过</strong>。整条 <code>npm test</code> 退出 0，包含整局走查、七人 100 局模拟（<code>badGames:0</code>）及本地真实 HTTP/WebSocket 联机。</p>
+<p>联机新增填写密钥后自动验证、保存、热加载、暂停保存，以及两次真实服务进程重启：保留暂停和自动启用均通过。模拟 DeepSeek 请求不产生真实费用。</p>
+<p>规则审计历史为 0.3.0 的 208 项及 160 局，见 <a href="#regression">规则审计验证</a>。当前交付以 <a href="#ease-regression">0.4.0 易用性验证</a> 与 <code>artifacts/ease-*.log</code> 为准。</p>
+<p>真实 DeepSeek、安卓 shell/浏览器/后台策略、不同运营商公网链路待验。页面渲染测试不等同于安卓浏览器视觉验收。</p>
 <h3>9. 路线与任务登记</h3>
 <div class="table-wrap"><table><thead><tr><th>编号</th><th>优先级</th><th>工作</th><th>状态</th><th>完成标准</th></tr></thead><tbody><tr><td>M01</td><td>P0</td><td>用户安卓平板安装与七手机验收</td><td>待真机</td><td>按安装指南完成全员首夜、投票、后台恢复，记录系统和网络</td></tr><tr><td>M02</td><td>P0</td><td>真实 DeepSeek 账户联调</td><td>待外部</td><td>平板测试按钮成功，夜间有裁量请求完成，失败回退可用</td></tr><tr><td>M03</td><td>P0</td><td>各自流量/Wi-Fi 的公网房间</td><td>待外部</td><td>至少两种网络加入同桌，切网重连可用，记录隧道中断情况</td></tr><tr><td>M04</td><td>P1</td><td>22 角色、夜序、胜负规则审计</td><td>已完成本轮范围</td><td>官方依据逐项登记，62 项专项回归；非穷举全部说书人裁量策略</td></tr><tr><td>M05</td><td>P1</td><td>丰富候选与特殊能力 AI 入口</td><td>部分完成</td><td>已扩展误登记信息；继续接入镇长转移、传位和日间登记的受约束裁量</td></tr><tr><td>M06</td><td>P1</td><td>公开主持与规则问答</td><td>规划</td><td>独立公开上下文，普通/醉毒玩家都得到正确规则说明，断网可回退</td></tr><tr><td>M07</td><td>P2</td><td>更稳定的公网部署与断线体验</td><td>规划</td><td>现场实测后决定固定隧道或服务器，不能先承诺移动网络可达</td></tr><tr><td>M08</td><td>P2</td><td>语音与桌面信息输入</td><td>规划</td><td>先明确主动提交/录音范围，评估带宽和延迟，再实现</td></tr><tr><td>M09</td><td>P3</td><td>延后确定身份等实验房规</td><td>规划</td><td>开局明示、候选账本、一致性检查、独立测试，不污染默认模式</td></tr></tbody></table></div>
 <p>每次更新记录：版本/日期、需求、改动文件、测试及退出码、外部验证条件、未解决事项、配置和存档兼容性、交付包哈希。状态只有取得对应证据后才能从“待验”改为“通过”；不写猜测的完成日期。</p>
@@ -194,7 +190,7 @@ nano ai.local.json</code></pre>
 <li>修改前重现问题，新增能区分错误与正确行为的测试。避免只检验实现本身。</li>
 <li>运行受影响测试及必要的整局、隔离和联机验证；记录权限限制与未测平台。</li>
 <li>同步三份说明的功能状态、版本和操作文案，运行 <code>node tools/build-docs.js</code>。</li>
-<li>Windows PowerShell 7.2+ 中运行 <code>./tools/package-android.ps1</code>；检查清单与 SHA-256。按白名单收录运行文件、说明和空密钥模板。加 <code>-IncludeTests -OutputName blood-clocktower-source-v0.3.0.zip</code> 生成源码包。私密仓库源码与发布附件分别交付，不把备份和测试日志提交。</li>
+<li>Windows PowerShell 7.2+ 中运行 <code>./tools/package-android.ps1</code>；检查清单与 SHA-256。按白名单收录运行文件、说明和空密钥模板。加 <code>-IncludeTests -OutputName blood-clocktower-source-v0.4.0.zip</code> 生成源码包。私密仓库源码与发布附件分别交付，不把备份和测试日志提交。</li>
 <li>严禁把 <code>ai.local.json</code>、<code>room.json</code>、日志、原图备份和测试房间打进普通用户包。技术人员从源码工作区维护测试，用户包不含完整测试源码。</li>
 <li>更新用户设备前停止旧服务，备份旧目录与私密配置/存档。先验小测试，再验全员局；出现兼容问题时停止服务后恢复旧目录。</li>
 </ol>
@@ -205,47 +201,50 @@ nano ai.local.json</code></pre>
 <h3>12. 0.3.0 数据与规则变更</h3>
 <p>夜序按当前官方公开通用表筛选本剧本，间谍移至夜末，掘墓人在共情者/占卜师之后；旧实体表位置见核对说明。夜间死亡对引擎立即生效，对普通视图到黎明才公布。</p>
 <p>存档 <code>v:2</code> 新增 <code>demonBluffs</code> 与 <code>infoReminders</code>，旧存档默认空列表/对象，不追补三张牌或重发身份。<code>day.executed.died</code> 区分处决与因处决死亡；旧记录缺省按原先实际死亡语义读取。每轮提名结果保存 <code>threshold</code>，避免白天死亡后倒改旧门槛。</p>
-<p><code>slayerShots</code> 仅记录宣称，真实次数由 <code>slayerUsed</code> 判定；允许投票中行动和重复假宣称，结束白天后拒绝。管家票不作废，不再生成 <code>butlerVoided</code>；私密提醒不以醉毒决定是否出现。旧局曾发出的信息无法撤回，建议结束旧局后更新、另开新局。</p></section>
-<section id="ai-config" style="border-top:3px solid #dfe7f1;margin-top:48px;padding-top:24px"><p><a href="#top">返回目录</a></p><h2>DeepSeek 说书人接口配置</h2>
-<h3>最简单的启用方式</h3>
-<ol start="1">
-<li>使用本次更新的 <code>blood-clocktower-android-ai.zip</code>，按《安卓平板使用.md》解压和启动。</li>
-<li>把项目里的 <code>ai.config.example.json</code> 复制一份，命名为 <code>ai.local.json</code>，放在 <code>server.js</code> 同一目录。</li>
-<li>只把 <code>apiKey</code> 的空字符串改成你在 DeepSeek 平台申请的密钥，保存。不要把密钥填在手机网页里，也不需要发到聊天中。</li>
-<li>重启游戏服务。平板“说书人操作”里会显示“已配置，未启用”，可以先点“测试连接（1 次调用）”，看到成功后再点“启用 AI”。想恢复纯自动情报时点“暂停 AI”。连接测试会调用一次真实服务，但不发送对局数据、不开始游戏。</li>
-</ol>
-<p>模板：</p>
-<pre><code>{
-  &quot;enabled&quot;: false,
-  &quot;apiKey&quot;: &quot;&quot;,
-  &quot;baseUrl&quot;: &quot;https://api.deepseek.com&quot;,
-  &quot;model&quot;: &quot;deepseek-flash&quot;,
-  &quot;timeoutMs&quot;: 12000
-}</code></pre>
-<p><code>enabled</code> 保持 <code>false</code> 时，每次启动后由平板手动启用；改成 <code>true</code> 可在启动时自动启用。默认模型按照 2026-10-22 查询的 DeepSeek 官方文档设置，可在模型名称改变时修改 <code>model</code>，不必改程序。</p>
-<p>安卓 Termux 中复制配置可以执行：</p>
-<pre><code>cd ~/blood-clocktower
-cp ai.config.example.json ai.local.json</code></pre>
-<p>随后使用文本编辑器修改这个文件。没有编辑器时可先执行 <code>pkg install nano</code>，再用 <code>nano ai.local.json</code>。修改后重启原来的启动脚本；想让各手机用自己的网络时仍然加 <code>--tunnel</code>。</p>
-<p>也支持环境变量 <code>DEEPSEEK_API_KEY</code>、<code>DEEPSEEK_BASE_URL</code>、<code>DEEPSEEK_MODEL</code>、<code>AI_TIMEOUT_MS</code>、<code>AI_ENABLED</code>。环境变量覆盖文件；<code>AI_ENABLED=1</code> 启用，<code>0</code> 关闭。接口地址须为 HTTPS；本机 HTTP 仅供自动测试。</p>
-<h3>这一版做了什么</h3>
-<p>开启 AI 后，夜间有裁量空间的信息请求会自动调用 DeepSeek。引擎生成一组候选信息卡，模型结合魔典与先前裁量选择候选编号；最终发给玩家的卡片来自引擎，不能由模型随意拼造。没有裁量空间的固定结果直接发送，不调用模型。</p>
-<p>酒鬼的假身份只从本局未在场的镇民中选择，不能是其他外来者、爪牙或恶魔。AI 接口没有更改真实身份、假身份或能力生效状态的权限。</p>
-<p>模型默认使用非思考、非流式 JSON 输出。单次调用最长 12 秒，早于引擎的 15 秒回退；断网、限流、认证失败、空响应、无效 JSON、未知候选编号或截断响应都会回退为引擎结果，不重新反复请求。暂停、跳过、重开或引擎先回退后，迟到结果会被丢弃。</p>
-<p>这次接通的是<strong>夜间私密情报裁量</strong>。公开气氛主持、语音、规则问答、动态身份后置，以及所有特殊能力的完整 AI 决策尚未接入。候选范围沿用当前引擎已实现的规则和登记策略，不代表已经覆盖所有官方裁量组合。</p>
-<h3>连接与隐私</h3>
-<p>平板统一访问 DeepSeek，各手机不需要分别配置密钥。DeepSeek 收到的私密裁量上下文包括当前魔典、情报请求和裁量记录，不含座位登录 token 或房主 PIN；公开网页只收到是否配置、是否启用和工作状态。</p>
-<p><code>ai.local.json</code> 只保存在平板服务端，已加入忽略清单，不通过网页提供，也不放进交付压缩包。私密裁量理由记录在含完整对局状态的 <code>room.json</code> 中，不进入公共日志或其他玩家视图。后续公开主持应使用独立、只含公开事实的上下文。</p>
-<p>使用真实密钥启用后，实际请求会按服务商规则计费；本次开发验证全部使用模拟接口，尚未进行真实账户联调。公网房间的可达性和 DeepSeek API 的可达性是两件事，需要在平板网络上分别确认。</p>
-<h3>故障提示</h3>
+<p><code>slayerShots</code> 仅记录宣称，真实次数由 <code>slayerUsed</code> 判定；允许投票中行动和重复假宣称，结束白天后拒绝。管家票不作废，不再生成 <code>butlerVoided</code>；私密提醒不以醉毒决定是否出现。旧局曾发出的信息无法撤回，建议结束旧局后更新、另开新局。</p>
+<h3>13. 0.4.0 图形配置与维护约束</h3>
 <ul>
-<li>“请先在平板配置密钥”：检查 <code>ai.local.json</code> 的位置、JSON 格式和 <code>apiKey</code>，修改后重启。</li>
-<li>“本次调用失败，已自动发情报”：对局可以继续；检查余额、模型名、平板网络与接口地址。程序不会把服务商错误正文或密钥展示在公共屏。</li>
-<li>想暂时离线玩：点“暂停 AI”，使用共同局域网继续；跨网络隧道本身仍需要互联网。</li>
+<li>大厅及设置中的“连接 DeepSeek”打开密码框，只接收 API Key；无端点/模型选择，默认使用官方地址和 <code>deepseek-flash</code>。模型在云端，无需下载。</li>
+<li>房主 WebSocket：<code>{t:&quot;host&quot;, action:&quot;configureAI&quot;, apiKey:&quot;...&quot;}</code>。仅已认证房主、平板本机连接或可信本机 HTTPS 反向代理可调用；普通玩家、说书人及明文远程局域网连接被拒绝。</li>
+<li>先以空对局上下文测试一次，再原子写入私密配置，最后替换客户端并启用。任一步失败保留旧连接/旧配置，重复点击共用忙状态，不并发收费测试。</li>
+<li><code>managedByUI:true</code> 的密钥与 enabled 优先于旧环境值；没有这个标志时维持原环境优先。端点和模型可由维护者的环境变量覆盖，网页不能指定。<code>AI_CONFIG_FILE</code> 允许隔离私密配置位置。</li>
+<li><code>ai-setup</code> 是仅房主收到的工作/成功/错误消息，带 allowed 标志，无密钥。重连重新发送当前状态。<code>ai-settings</code> 仅在开关已应用且保存完成后确认；避免把更早的公开状态误当成写盘成功。</li>
+<li>密钥不放 URL、浏览器存储、公共状态或 room.json。私密临时文件使用随机名、0600、排他创建及原子替换，失败清理；忽略 <code>ai.local.json*</code>。</li>
+<li>暂停优先立即停止调用。即便写盘失败也保持本次暂停，并明确提示下次启动需确认；启用写盘失败则恢复原开关。替换连接会取消旧请求并按引擎回退。</li>
+<li>僧侣保留官方连续守护规则，不加入本桌新限制；有跨夜与存档恢复回归。</li>
+</ul></section>
+<section id="ai-config" style="border-top:3px solid #dfe7f1;margin-top:48px;padding-top:24px"><p><a href="#top">返回目录</a></p><h2>连接 DeepSeek：平板上填一次就好</h2>
+<p>适用版本：0.4.0。普通使用者不需要编辑文件、输入代码、选择接口地址或下载模型。</p>
+<h3>第一次连接</h3>
+<ol start="1">
+<li>在安卓平板上启动游戏，用启动窗口显示的“本机（平板）”房主链接打开大厅。</li>
+<li>点大厅里的 <strong>“连接 DeepSeek”</strong>。</li>
+<li>粘贴 DeepSeek 的 <strong>API Key（密钥）</strong>，点 <strong>“保存并连接”</strong>。只填密钥，不填代码或网址。</li>
+<li>等待“DeepSeek 已连接并启用，设置已保存”。这样就可以开始游戏了。</li>
+</ol>
+<p>还没有密钥时，可由你在 <a href="https://platform.deepseek.com/api_keys">DeepSeek 官方平台</a> 创建并复制。各玩家的手机不用配置密钥。填写时用密码框遮住内容，确认或取消后清空输入框；不要把密钥发到聊天或群里。</p>
+<p>连接按钮会自动使用预置的 DeepSeek 模型，并发起一次小测试，按你的 DeepSeek 账户规则计费。测试不发送对局身份、不开始游戏。模型在云端运行，平板不需要下载或安装模型文件。无需反复点击，连接中会显示进度。</p>
+<h3>以后怎么用</h3>
+<ul>
+<li>下次启动会自动读取已保存的密钥和开关，不用重新填写。</li>
+<li>点“暂停 AI”可回到自动情报模式，并记住暂停状态；点“启用 AI”恢复。</li>
+<li>换密钥时点“更换 DeepSeek 密钥”。新密钥验证与保存均成功后才替换旧连接，失败保留旧设置。</li>
+<li>不连接 AI 也可以开局。夜间调用失败会自动发出引擎情报，整桌仍能继续。</li>
 </ul>
-<p>依据：<a href="https://api-docs.deepseek.com/zh-cn/">DeepSeek 官方首次调用说明</a>、<a href="https://api-docs.deepseek.com/zh-cn/api/create-chat-completion/">Chat Completions 接口</a>、<a href="https://api-docs.deepseek.com/zh-cn/guides/json_mode/">JSON Output</a>。</p></section>
+<p>密钥只在平板本机房主页面或 HTTPS 房主页面填写。若从普通局域网 HTTP 地址打开而提示不能填写，请回到平板启动窗口，用“本机（平板）”链接打开；原有加入链接仍可给玩家用。</p>
+<h3>看不懂提示时</h3>
+<div class="table-wrap"><table><thead><tr><th>提示</th><th>怎么做</th></tr></thead><tbody><tr><td>密钥没有通过验证</td><td>重新复制完整的 API Key，不要夹带空格或代码</td></tr><tr><td>账户余额不足</td><td>在 DeepSeek 账户充值后再试</td></tr><tr><td>暂时繁忙或连接超时</td><td>确认平板能上网，稍等后重试</td></tr><tr><td>连接成功但设置未保存</td><td>检查平板剩余空间，稍后再试；旧设置仍保留</td></tr><tr><td>本次已暂停但设置未保存</td><td>本次已经停用；下次启动先确认开关，再请维护者检查存储</td></tr><tr><td>本次调用失败，已自动发情报</td><td>继续玩即可，休息时检查平板网络、账户或密钥</td></tr></tbody></table></div>
+<h3>当前 AI 的范围</h3>
+<p>目前接通夜间私密情报裁量：引擎生成合法信息候选，DeepSeek 选择编号。它不能改身份、死亡、票数或让酒鬼能力真实生效。公开主持、规则问答、语音和完整特殊能力裁量仍在规划中。</p>
+<p>最长 12 秒请求，15 秒引擎兜底；失败不反复收费重试。暂停、跳过、重开或替换连接时，旧请求取消或迟到结果被丢弃。</p>
+<h3>维护者附录</h3>
+<p>网页向已通过 PIN 认证的房主会话提交 <code>configureAI</code>，只接受密钥，不接收网页端点或模型参数。验证使用空对局上下文，验证成功后原子保存 <code>ai.local.json</code>，热替换客户端，不需重启服务。</p>
+<p>图形设置产生 <code>managedByUI:true</code>；该文件中的密钥及启停优先于旧环境值。未用图形设置时保留原环境变量优先规则。<code>DEEPSEEK_BASE_URL</code>、<code>DEEPSEEK_MODEL</code>、<code>AI_TIMEOUT_MS</code> 仍允许维护者覆盖；默认官方地址和 <code>deepseek-flash</code>。默认模型依 2026-10-22 查询的 <a href="https://api-docs.deepseek.com/">DeepSeek 官方说明</a> 设置。</p>
+<p>手工维护仍可复制 <code>ai.config.example.json</code> 为 <code>ai.local.json</code> 后编辑。<code>AI_CONFIG_FILE</code> 可指定配置文件位置，主要供隔离测试或维护使用。普通用户使用上面的按钮即可。</p>
+<p>密钥不回显、不进浏览器存储、对局存档、公共视图、日志、Git 或压缩包。临时配置同样忽略。服务端以 0600 创建私密临时文件并原子替换；实际文件权限仍受设备系统影响。</p>
+<p>DeepSeek 裁量会收到魔典与先前私密裁量，不含房主 PIN、座位 token 或 API Key 的正文。真实调用使用请求认证头中的密钥；单独连接测试不发送魔典。开发验证使用本地替身，真实账户与安卓设备仍待实测。</p></section>
 <section id="rules-audit" style="border-top:3px solid #dfe7f1;margin-top:48px;padding-top:24px"><p><a href="#top">返回目录</a></p><h2>暗流涌动官方规则核对</h2>
-<p>版本：0.3.0｜核对日期：2026-10-22｜范围：22 个角色、5–15 人，无旅行者和传奇角色的标准暗流涌动。</p>
+<p>版本：0.4.0｜核对日期：2026-10-22｜范围：22 个角色、5–15 人，无旅行者和传奇角色的标准暗流涌动。</p>
 <p>本文对应当前代码、官方依据与测试。覆盖标准机制不等于穷举全部说书人策略；信息候选仍有限采样，日间登记与镇长转移等由引擎自动选择。完整 AI 主持及特殊效果裁量入口尚未实现。</p>
 <h3>一、依据与夜序版本</h3>
 <p>能力和互动依据 <a href="https://wiki.bloodontheclocktower.com/Trouble_Brewing">官方角色索引</a>、各角色说明、<a href="https://wiki.bloodontheclocktower.com/Abilities">能力规则</a>、<a href="https://wiki.bloodontheclocktower.com/States">状态规则</a> 和 <a href="https://wiki.bloodontheclocktower.com/Rules_Explanation">规则解释</a>。正文采用中文转述。</p>
@@ -254,6 +253,7 @@ cp ai.config.example.json ai.local.json</code></pre>
 <p>其他夜：投毒者 → 僧侣 → 红唇女郎角色变化提醒位 → 小恶魔 → 守鸦人 → 共情者 → 占卜师 → 掘墓人 → 管家 → 间谍 → 黎明。</p>
 <p>红唇实际接管发生在真恶魔死亡时，提醒位不额外发动能力。新小恶魔当晚不再次击杀。5–6 人跳过首夜爪牙/恶魔信息，恶魔也不拿三个伪装提示；7 人以上才提供。参照 <a href="https://wiki.bloodontheclocktower.com/Glossary">官方词汇表的 Demon info / Minion info</a> 与 <a href="https://wiki.bloodontheclocktower.com/Toymaker">Toymaker 的正常开局信息说明</a>。</p>
 <h3>二、逐角色核对</h3>
+<p>0.4.0 保留标准僧侣规则：可以连续两晚守同一人，不另加连续守护限制。新增配置操作不改变原角色结算。</p>
 <div class="table-wrap"><table><thead><tr><th>角色及官方依据</th><th>核对后的处理</th><th>主要测试</th></tr></thead><tbody><tr><td><a href="https://wiki.bloodontheclocktower.com/Washerwoman">洗衣妇</a></td><td>首夜两人中有指定镇民，可包括自己；间谍可登记镇民</td><td>首夜限定、唯一镇民、自选配对、标记保存</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Librarian">图书管理员</a></td><td>首夜指定外来者配对或零外来者；酒鬼为真外来者，间谍可登记外来者</td><td>配对、零候选、间谍、醉毒</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Investigator">调查员</a></td><td>首夜指定爪牙配对；隐士可登记该爪牙，角色不必未在场</td><td>首夜限定、登记、醉毒</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Chef">厨师</a></td><td>首夜数圆桌相邻邪恶对，首尾相邻，三连为两对</td><td>三连、首尾、隐士/间谍中毒</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Empath">共情者</a></td><td>每夜读取两个最近存活邻居，跳过死者，在恶魔后行动</td><td>存活邻居、死亡变化、误登记</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Fortune_Teller">占卜师</a></td><td>两个不同目标，可选自己/死者；死恶魔仍可识别；红鲱鱼可为本人且固定</td><td>死恶魔、自选、毒隐士、保存</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Undertaker">掘墓人</a></td><td>次夜起读因处决死亡者；再次处决尸体无新信息；支持死后登记</td><td>真酒鬼、无处决死亡、登记候选</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Monk">僧侣</a></td><td>次夜保护非自己任意人，可选死者；能挡小恶魔自杀；来源死亡保护消失</td><td>自选拒绝、死者、自刀、来源死亡</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Ravenkeeper">守鸦人</a></td><td>当夜死亡才醒，包括镇长转移；任意目标，支持登记</td><td>转移、旧死者不醒、候选</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Virgin">贞洁烈女</a></td><td>首次提名消耗机会；健康且提名者登记镇民时立即处决对方、结束白天</td><td>当场处决、醉毒首次、死亡、间谍</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Slayer">杀手</a></td><td>白天任意时刻一次真实能力；任意目标，尸体不能再死；醉毒仍消耗；允许重复假宣称</td><td>投票中、自选/死者、醉毒、隐士</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Soldier">士兵</a></td><td>健康时免恶魔伤害，毒后失效；镇长转移到士兵也不死</td><td>保护、毒、酒鬼、转移</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Mayor">镇长</a></td><td>日终三存活且无处决获胜；夜间死亡可转移或不转；转死者/士兵/受保护者不死人</td><td>日终、毒、尸体处决、转移、保护</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Butler">管家</a></td><td>每夜选非自己任意人；死主人仍须幽灵票才能跟投；误投照计，仅私密提醒</td><td>死主人/死管家、醉毒同提醒、公开票型</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Drunk">酒鬼</a></td><td>只拿镇民牌，真实外来者，无镇民能力；可收真假信息；不后置身份</td><td>5–15 人两路径，四种假能力</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Recluse">隐士</a></td><td>可邪恶/爪牙/恶魔登记，包括死后；毒后不误登记；不改变真身份或获得能力</td><td>醉毒、死后、杀手、调查、信息</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Saint">圣徒</a></td><td>健康时因处决死亡才使本队败；夜杀、毒后处决、再次处决尸体不触发</td><td>四种情形</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Poisoner">投毒者</a></td><td>任意目标；毒至次日黄昏，来源死/变恶魔立即解除；可自选</td><td>死者、自毒、死亡、传位、黄昏</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Spy">间谍</a></td><td>每夜读魔典；可善良/镇民/外来者登记，包括死后；毒后不误登记；传位失去间谍能力</td><td>夜末状态、配对、提示、死后/毒、传位</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Scarlet_Woman">红唇女郎</a></td><td>真恶魔死前至少五人且自身健康则接管；自刀也优先；中毒红唇仍可被小恶魔传位选中</td><td>4/5 门槛、自刀优先、毒、日间</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Baron">男爵</a></td><td>设置时以两外来者换两镇民；死亡不撤回</td><td>全人数配比、指定板子、死亡</td></tr><tr><td><a href="https://wiki.bloodontheclocktower.com/Imp">小恶魔</a></td><td>首夜不杀，次夜任意目标；死者不再死，保护可挡自刀；传位选活爪牙，服从红唇优先</td><td>首夜、死者、自刀、解除毒、即时结束</td></tr></tbody></table></div>
 <h3>三、胜负与投票</h3>
 <ul>
@@ -302,4 +302,27 @@ cp ai.config.example.json ai.local.json</code></pre>
 <p>存档 v2 新增恶魔伪装、配对标记和处决死亡区分；旧字段缺省兼容。不重发旧局身份或撤回已经发出的信息，升级请结束旧局、停止服务、备份私密文件后另开新局。</p>
 <p>GitHub 目标：<code>wyswang3/blood-clocktower-storyteller</code>。上传前通过官方 API 确认私密状态及当前账号写入权限；密钥与凭据不进入项目。源代码和发布附件以实际仓库结果为准。</p>
 <h3>尚未验收</h3>
-<p>安卓平板真实安装、浏览器及省电策略，七部真实手机跨运营商网络，真实 cloudflared 链路，真实 DeepSeek 账户仍待实测。模型目前只选择夜间信息候选；镇长、传位、日间登记由引擎自动裁量，不等于完整真人说书人。</p></section><footer>更新日期：2026-10-22 · 本页可离线阅读；以当前程序与验证记录为准。</footer></main></body></html>
+<p>安卓平板真实安装、浏览器及省电策略，七部真实手机跨运营商网络，真实 cloudflared 链路，真实 DeepSeek 账户仍待实测。模型目前只选择夜间信息候选；镇长、传位、日间登记由引擎自动裁量，不等于完整真人说书人。</p></section>
+<section id="ease-regression" style="border-top:3px solid #dfe7f1;margin-top:48px;padding-top:24px"><p><a href="#top">返回目录</a></p><h2>0.4.0 平板一键连接与易用性验证</h2>
+<p>日期：2026-10-22。用户最终确认：僧侣保持官方规则，允许连续两晚守同一人，不增加房规。</p>
+<h3>本次交付</h3>
+<ul>
+<li>平板大厅直接提供“连接 DeepSeek”，设置内也保留入口。填写 API Key 后自动选预置模型、验证一次、保存并启用；不需要用户编辑 JSON、填写接口地址或下载模型。</li>
+<li>API Key 使用密码框，确认/取消后清空；不进浏览器存储、URL、公共状态、对局存档和日志，也不回显给房主。只保存在服务端私密配置。</li>
+<li>仅房主、本机或可信本机 HTTPS 代理连接可以提交。普通玩家、说书人、明文远程局域网请求被拒绝。页面不接受模型和端点参数。</li>
+<li>新密钥验证及原子保存成功后才热加载；失败保留旧设置与连接。输入格式、无效密钥、余额不足、限流、超时与写盘失败使用中文说明。</li>
+<li>忙状态阻止重复收费测试；断线重连可恢复进度。连接测试无魔典，真实使用时只有私密裁量发送魔典。</li>
+<li>GUI 保存 <code>managedByUI:true</code>，启动读取保存的密钥与启停；暂停也记住。新连接替换时取消旧请求并按引擎回退。</li>
+<li>暂停立即生效，即使设置无法保存也保持本次暂停并提示；启用保存失败则恢复原开关。</li>
+<li>新增 <code>ai-settings</code> 写盘后确认，避免把先前的公开状态误认为保存完成。</li>
+<li>更新安装、使用、维护、配置说明及 README，补充标准僧侣连续守护回归。</li>
+</ul>
+<h3>验证结果</h3>
+<div class="table-wrap"><table><thead><tr><th>项目</th><th>结果</th></tr></thead><tbody><tr><td>引擎回归</td><td>86 项通过</td></tr><tr><td>规则专项</td><td>63 项通过，包含连续守护与恢复存档</td></tr><tr><td>AI 请求与生命周期</td><td>21 项通过</td></tr><tr><td>新增设置持久化</td><td>9 项通过</td></tr><tr><td>页面渲染与交互</td><td>36 项通过，含密码框、取消、断线、重复点击及安全提示</td></tr><tr><td>服务入口、配置权限与热加载</td><td>12 项通过</td></tr><tr><td>隧道</td><td>3 项通过</td></tr><tr><td>合计</td><td><strong>230 项通过</strong></td></tr><tr><td>整局与模拟</td><td>发牌至结束走查通过；七人 100 局 <code>badGames:0</code></td></tr><tr><td>本地联机</td><td>七个模拟手机、平板、真实 HTTP/WebSocket 和模拟 DeepSeek 全部通过</td></tr><tr><td>重启</td><td>停止与重启真实服务两次，暂停保留和自动启用均通过</td></tr></tbody></table></div>
+<p>完整 <code>npm test</code> 在允许启动本地服务的环境运行，退出 0。日志为 <code>artifacts/ease-full-regression.log</code>，单项日志为 <code>artifacts/ease-*-regression.log</code>。本轮没有重复执行此前已验证、且引擎行为未改动的五人和十二人模拟；不把历史结果冒充本次运行。</p>
+<p>联机实际验证了一次填写后自动测试、私密文件保存、热加载启用、不可通过 HTTP 读取密钥、房主响应不回显、重启读取文件、暂停记忆及重新启用后的自动恢复。模拟接口没有真实 DeepSeek 费用。</p>
+<h3>更新和交付</h3>
+<p>普通运行包 <code>artifacts/blood-clocktower-android-ai.zip</code>，源码包 <code>artifacts/blood-clocktower-source-v0.4.0.zip</code>。旁置清单记录文件数量、逐文件和整包 SHA-256；工具核对压缩条目。旧版本源码包与 Git 历史保留。</p>
+<p>HTML 阅读版做编码、结构和本地链接核对；本轮没有安卓浏览器视觉实测。真实 DeepSeek 账户、安卓安装与省电策略、运营商公网和 cloudflared 实链路仍待验。</p>
+<p>存档仍为 v2，角色及胜负机制不变。私密 AI 配置新增 GUI 管理标志；未使用按钮时保留原环境配置方式。升级时保留 <code>room.json</code> 与 <code>ai.local.json</code>，建议在一局结束后停止服务、备份旧目录再升级。</p>
+<p>最初安卓运行环境仍需按安装指南用 Termux 安装一次；本版简化的是游戏内连接与日常使用，没有生成原生 APK。AI 当前仍为夜间私密信息裁量，完整主动主持、语音和问答不在本次实现范围。</p></section><footer>更新日期：2026-10-22 · 本页可离线阅读；以当前程序与验证记录为准。</footer></main></body></html>

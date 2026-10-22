@@ -464,3 +464,63 @@ test('平板：AI 开关只发送启用状态，不经网页传密钥', async ()
   await click({ target: { closest: () => ({ getAttribute: () => 'toggle-ai' }) } });
   assert.deepStrictEqual(JSON.parse(JSON.stringify(messages)), [{ t: 'host', action: 'setAI', enabled: true }]);
 });
+
+test('平板：大厅直接提供连接按钮，不连接 AI 也能开局', () => {
+  const host = loadPage('public/host.js'); const { pub } = viewAt('lobby');
+  pub.ai = { configured: false, enabled: false };
+  const html = host.lobbyScreen(pub);
+  assert.match(html, /data-act="setup-ai"/); assert.match(html, /连接 DeepSeek/);
+  assert.match(html, /不连接也能开始游戏/); assert.match(html, /data-act="start"/);
+  assert.doesNotMatch(html, /api\.deepseek\.com|deepseek-flash|apiKey/);
+});
+
+test('平板：只在明确确认后提交密钥，不存到浏览器、不发送端点或模型', async () => {
+  for (const key of [null, 'https://example.test', 'fake-private-key']) {
+    const host = loadPage('public/host.js'); const app = vm.runInContext('App', host); const { pub } = viewAt('lobby');
+    vm.runInContext('H.view = ' + JSON.stringify(pub) + '; H.aiSetupAllowed = true;', host);
+    const sent = []; let stored = 0; let options;
+    app.ask = async (_title, opts) => { options = opts; return key; };
+    app.raw = (m) => { sent.push(m); return true; }; app.store.set = () => stored++; app.toast = () => {};
+    await host.document.getElementById('app').listeners.click[0]({ target: { closest: () => ({ getAttribute: () => 'setup-ai' }) } });
+    assert.equal(options.secret, true); assert.equal(options.okLabel, '保存并连接'); assert.match(options.text, /计费/);
+    assert.equal(stored, 0); assert.equal(sent.length, key === 'fake-private-key' ? 1 : 0);
+    if (sent.length) assert.deepStrictEqual(JSON.parse(JSON.stringify(sent[0])), { t: 'host', action: 'configureAI', apiKey: key });
+    assert.ok(!JSON.stringify(vm.runInContext('H', host)).includes('fake-private-key'));
+  }
+});
+
+test('平板：密钥输入是密码框，确认后清空并移除输入控件', async () => {
+  const host = loadPage('public/host.js'); const app = vm.runInContext('App', host);
+  const input = { value: '', focus() {}, select() {} }; let html = '', removed = false; const listeners = {};
+  const mask = { set innerHTML(value) { html = value; }, querySelector: () => input, addEventListener: (type, fn) => { listeners[type] = fn; }, remove: () => { removed = true; } };
+  host.document.createElement = () => mask; host.document.body.appendChild = () => {};
+  const result = app.ask('连接 DeepSeek', { secret: true, maxlength: 512 });
+  assert.match(html, /type="password"/); assert.match(html, /autocomplete="off"/);
+  input.value = 'fake-private-key'; listeners.keydown({ key: 'Enter' });
+  assert.equal(await result, 'fake-private-key'); assert.equal(input.value, ''); assert.equal(removed, true);
+  assert.doesNotMatch(html, /fake-private-key/);
+});
+
+test('平板：不安全页面不打开密钥框；断线发送失败可以重新尝试', async () => {
+  const host = loadPage('public/host.js'); const app = vm.runInContext('App', host); const { pub } = viewAt('lobby');
+  vm.runInContext('H.view = ' + JSON.stringify(pub), host);
+  let asked = 0, alerted = 0;
+  app.alert = async () => alerted++; app.ask = async () => { asked++; return 'fake-private-key'; }; app.raw = () => false;
+  const click = host.document.getElementById('app').listeners.click[0]; const event = { target: { closest: () => ({ getAttribute: () => 'setup-ai' }) } };
+  await click(event); assert.equal(asked, 0); assert.equal(alerted, 1);
+  vm.runInContext('H.aiSetupAllowed = true', host); await click(event);
+  assert.equal(vm.runInContext('H.aiSetupBusy', host), false); assert.match(vm.runInContext('H.aiSetupMessage', host), /断开/);
+});
+
+test('平板：连接中的重复点击被阻止；重连状态可恢复，服务端消息以文本显示', async () => {
+  const host = loadPage('public/host.js'); const app = vm.runInContext('App', host); const { pub } = viewAt('lobby');
+  vm.runInContext('H.view = ' + JSON.stringify(pub), host);
+  app.start = (opts) => Object.assign(app, opts); host.connectHost();
+  app.incoming(JSON.stringify({ t: 'ai-setup', status: 'working', allowed: true, message: '正在连接' }));
+  assert.equal(vm.runInContext('H.aiSetupBusy', host), true);
+  app.ask = async () => { throw Error('重复点击不应再次打开输入框'); };
+  await host.document.getElementById('app').listeners.click[0]({ target: { closest: () => ({ getAttribute: () => 'setup-ai' }) } });
+  app.incoming(JSON.stringify({ t: 'ai-setup', status: 'success', allowed: true, message: '<script>unsafe</script>' }));
+  assert.equal(vm.runInContext('H.aiSetupBusy', host), false);
+  assert.match(host.lobbyScreen(pub), /&lt;script&gt;/); assert.doesNotMatch(host.lobbyScreen(pub), /<script>unsafe/);
+});

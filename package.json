@@ -1,13 +1,13 @@
 {
   "name": "blood-clocktower-storyteller",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "description": "血染钟楼 · 无人说书人：平板公共屏 + 手机私密屏，局域网或公网都能跑",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "tunnel": "node server.js --tunnel",
-    "test": "node tests/engine.test.js && node tests/rules.test.js && node tests/ai.test.js && node tests/ui.test.js && node tests/server.test.js && node tests/tunnel.test.js && node tests/playthrough.js && node tests/sim.js 100 && node tests/e2e.js",
+    "test": "node tests/engine.test.js && node tests/rules.test.js && node tests/ai.test.js && node tests/ai-settings.test.js && node tests/ui.test.js && node tests/server.test.js && node tests/tunnel.test.js && node tests/playthrough.js && node tests/sim.js 100 && node tests/e2e.js",
     "test:runner": "node --test tests/",
     "sim": "node tests/sim.js",
     "walk": "node tests/playthrough.js"
