@@ -24,6 +24,7 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
+      - uses: android-actions/setup-android@v3
       - name: 安卓工具与官方联网组件源码
         run: |
           sdkmanager 'platforms;android-35' 'build-tools;35.0.0' 'ndk;27.2.12479018' 'cmake;3.22.1'
@@ -40,7 +41,11 @@ jobs:
       - name: 编译 APK 内置运行环境与公网连接
         run: bash tools/build-android-native.sh
       - name: 构建和静态检查
-        run: artifacts/gradle-8.9/bin/gradle -p android --no-daemon assembleRelease assembleDebug assembleDebugAndroidTest lintRelease
+        run: |
+          artifacts/gradle-8.9/bin/gradle -p android --no-daemon assembleRelease assembleDebug assembleDebugAndroidTest lintRelease
+          mkdir -p artifacts/android-signing-tools
+          cp "$ANDROID_HOME/build-tools/35.0.0/lib/apksigner.jar" artifacts/android-signing-tools/
+          "$ANDROID_HOME/build-tools/35.0.0/zipalign" -c -P 16 4 android/app/build/outputs/apk/release/app-release-unsigned.apk
       - name: 保存构建结果
         uses: actions/upload-artifact@v4
         with:
@@ -51,6 +56,9 @@ jobs:
             android/app/build/outputs/apk/debug/*.apk
             android/app/build/outputs/apk/androidTest/debug/*.apk
             android/app/build/reports/lint-results-release.html
+            artifacts/android-signing-tools/
+      - name: 启用模拟器硬件加速
+        run: sudo chmod a+rw /dev/kvm
       - name: 安卓模拟器运行验收
         uses: reactivecircus/android-emulator-runner@v2
         with:
