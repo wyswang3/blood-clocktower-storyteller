@@ -1,0 +1,68 @@
+name: Android APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['android/**', 'engine/**', 'lib/**', 'public/**', 'server.js', 'package.json', 'tests/**', 'tools/build-android-native.sh', '.github/workflows/android.yml']
+permissions:
+  contents: read
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: 游戏回归测试
+        run: npm test
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: 安卓工具与官方联网组件源码
+        run: |
+          sdkmanager 'platforms;android-35' 'build-tools;35.0.0' 'ndk;27.2.12479018' 'cmake;3.22.1'
+          mkdir -p artifacts
+          git clone --depth 1 --branch 2026.10.3 https://github.com/cloudflare/cloudflared.git artifacts/cloudflared
+          curl --fail --location --retry 3 https://services.gradle.org/distributions/gradle-8.9-bin.zip -o artifacts/gradle.zip
+          curl --fail --location --retry 3 https://services.gradle.org/distributions/gradle-8.9-bin.zip.sha256 -o artifacts/gradle.sha256
+          printf '%s  artifacts/gradle.zip\n' "$(cat artifacts/gradle.sha256)" | sha256sum --check
+          unzip -q artifacts/gradle.zip -d artifacts
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: artifacts/cloudflared/go.mod
+          cache: false
+      - name: 编译 APK 内置运行环境与公网连接
+        run: bash tools/build-android-native.sh
+      - name: 构建和静态检查
+        run: artifacts/gradle-8.9/bin/gradle -p android --no-daemon assembleRelease assembleDebug assembleDebugAndroidTest lintRelease
+      - name: 保存构建结果
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-build
+          retention-days: 14
+          path: |
+            android/app/build/outputs/apk/release/*.apk
+            android/app/build/outputs/apk/debug/*.apk
+            android/app/build/outputs/apk/androidTest/debug/*.apk
+            android/app/build/reports/lint-results-release.html
+      - name: 安卓模拟器运行验收
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          arch: x86_64
+          target: google_apis
+          profile: pixel_tablet
+          disable-animations: true
+          script: bash tools/smoke-android.sh
+      - name: 保存安卓验收证据
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-smoke
+          path: artifacts/android-smoke/

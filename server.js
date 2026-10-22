@@ -20,6 +20,8 @@ const tunnel = require('./lib/tunnel');
 const { loadAIConfig, createDeepSeekClient } = require('./lib/deepseek');
 const { createAIStoryteller } = require('./lib/ai-storyteller');
 const { validateKey, configFromKey, writeAISettings, connectionError } = require('./lib/ai-settings');
+const { createNativeControl } = require('./lib/native-control');
+const { createTunnelManager } = require('./lib/tunnel-manager');
 
 const PORT = Number(process.env.PORT) || 3000;
 const WANT_TUNNEL = process.env.TUNNEL === '1' || process.argv.includes('--tunnel');
@@ -32,6 +34,10 @@ let localJoinUrl = null;
 let ai = null;
 let aiTestRunning = false;
 let aiSetupState = { status: 'idle', message: '' };
+const NATIVE = !!process.env.BTC_NATIVE_TOKEN;
+let nativeMode = WANT_TUNNEL ? 'internet' : 'lan';
+let nativeLanIP = process.env.BTC_LAN_IP || '';
+let nativeTunnel = null;
 
 /* ------------------------------ 房间与持久化 ------------------------------ */
 
@@ -229,6 +235,29 @@ function readBody(req, cb) {
   });
 }
 
+const nativeControl = createNativeControl({
+  token: process.env.BTC_NATIVE_TOKEN,
+  status: () => ({ pin, joinUrl: joinUrl || '', mode: nativeMode,
+    message: nativeMode === 'lan'
+      ? joinUrl ? '房间已启动 · 请让手机连接同一 Wi-Fi 或热点' : '请连接 Wi-Fi 或热点，再分享房间链接'
+      : nativeTunnel && nativeTunnel.status().state === 'online' ? '公网房间已连接 · 大家可各用流量或 Wi-Fi'
+      : nativeTunnel && nativeTunnel.status().state === 'retrying' ? '公网暂未连通，正在重试；也可在连接设置中改用同一 Wi-Fi'
+      : '正在连接公网，请稍等；连接后即可分享链接' }),
+  retry: () => { nativeMode = 'internet'; nativeTunnel.retry(); },
+  setMode: (mode) => {
+    nativeMode = mode;
+    if (mode === 'internet') nativeTunnel.start();
+    else nativeTunnel.stop();
+  },
+  networkChanged: (ip) => {
+    nativeLanIP = ip;
+    localJoinUrl = ip ? `http://${ip}:${PORT}/player` : null;
+    if (nativeMode === 'internet') nativeTunnel.retry();
+    else { joinUrl = localJoinUrl; game.emit('局域网房间地址已更新。'); }
+  },
+  stop: () => { ai.dispose(); if (nativeTunnel) nativeTunnel.stop(); saveNow(); },
+});
+
 const server = http.createServer((req, res) => {
   let url;
   try {
@@ -248,6 +277,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (nativeControl(req, res, p, sendJson)) return;
   if (p === '/health') return sendJson(res, 200, { ok: true, phase: game.phase, round: game.round });
 
   // 文档里的两个状态接口（REST）。座位接口必须带 token，否则谁都能拉到别人的身份。
@@ -668,7 +698,7 @@ function printBanner() {
   const nets = lanAddresses();
   const host = nets.length ? nets[0].address : '<设备的局域网IP>';
   const publicUrl = (process.env.PUBLIC_URL || '').replace(/\/+$/, '');
-  localJoinUrl = nets.length ? `http://${host}:${PORT}/player` : null;
+  localJoinUrl = nativeLanIP ? `http://${nativeLanIP}:${PORT}/player` : nets.length ? `http://${host}:${PORT}/player` : null;
   joinUrl = publicUrl ? `${publicUrl}/player` : localJoinUrl;
   const label = publicUrl ? '公网地址' : '局域网地址';
   const lines = [
@@ -695,14 +725,25 @@ function printBanner() {
   lines.push(`  状态已持久化到 ${STATE_FILE}`);
   lines.push('  按 Ctrl+C 停止；手机连不上先开 /connect 或看 dev.md。');
   lines.push('');
-  console.log(lines.join('\n'));
+  // APK 无需终端；不把 PIN、房间和私密路径写进系统日志。
+  if (!NATIVE) console.log(lines.join('\n'));
 }
 
 let tunnelChild = null;
 
 server.listen(PORT, '0.0.0.0', () => {
   printBanner();
-  if (WANT_TUNNEL && !process.env.PUBLIC_URL) {
+  if (NATIVE) {
+    nativeTunnel = createTunnelManager({
+      port: PORT,
+      startTunnel: (port, opts) => tunnel.startTunnel(port, { ...opts, timeoutMs: 60000, protocol: 'http2', waitForConnection: true }),
+      onChange: ({ state, url }) => {
+        joinUrl = nativeMode === 'lan' ? localJoinUrl : state === 'online' ? `${url}/player` : null;
+        game.emit(state === 'online' ? '公网房间已连接，可以分享新的加入链接。' : nativeMode === 'lan' ? '已切换为同一 Wi-Fi / 热点模式。' : '正在恢复公网连接，请留意平板上的链接。');
+      },
+    });
+    if (nativeMode === 'internet') nativeTunnel.start();
+  } else if (WANT_TUNNEL && !process.env.PUBLIC_URL) {
     console.log('  正在启动 cloudflared 公网隧道…');
     tunnel
       .startTunnel(PORT)
@@ -737,6 +778,7 @@ server.listen(PORT, '0.0.0.0', () => {
 
 process.on('SIGINT', () => {
   ai.dispose();
+  if (nativeTunnel) nativeTunnel.stop();
   saveNow();
   if (tunnelChild) {
     try {
@@ -750,6 +792,7 @@ process.on('SIGINT', () => {
 });
 process.on('SIGTERM', () => {
   ai.dispose();
+  if (nativeTunnel) nativeTunnel.stop();
   saveNow();
   if (tunnelChild) {
     try {

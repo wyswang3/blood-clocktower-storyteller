@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.22.1)
+project(clocktower)
+add_library(node SHARED IMPORTED)
+set_target_properties(node PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/libnode/bin/${ANDROID_ABI}/libnode.so)
+add_library(clocktower SHARED src/main/cpp/runtime.cpp)
+target_include_directories(clocktower PRIVATE libnode/include/node)
+target_link_libraries(clocktower node android log)
+target_link_options(clocktower PRIVATE "-Wl,-z,max-page-size=16384")
