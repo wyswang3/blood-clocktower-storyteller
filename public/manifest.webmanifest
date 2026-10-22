@@ -1,0 +1,15 @@
+{
+  "name": "血染钟楼 · 我的身份",
+  "short_name": "血染",
+  "description": "线下血染钟楼的私人身份屏",
+  "start_url": "/player",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0b0f",
+  "theme_color": "#0b0b0f",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

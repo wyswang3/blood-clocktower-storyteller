@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>连接检查 · 血染钟楼</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #0b0b10;
+        --card: #14141d;
+        --line: #2a2a38;
+        --text: #ece9e4;
+        --dim: #9b96a6;
+        --gold: #d9c07c;
+        --ok: #7fce9b;
+        --bad: #e06b74;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        background: var(--bg);
+        color: var(--text);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        padding: 22px 18px 40px;
+      }
+      h1 { font-size: 1.5rem; margin: 0 0 6px; letter-spacing: 0.08em; }
+      .sub { color: var(--dim); font-size: 0.9rem; margin-bottom: 18px; }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 14px 16px;
+        margin-bottom: 14px;
+      }
+      .row { display: flex; justify-content: space-between; gap: 12px; padding: 5px 0; font-size: 0.92rem; }
+      .row span:first-child { color: var(--dim); }
+      .row b { font-weight: 600; text-align: right; word-break: break-all; }
+      .state { font-size: 1.05rem; font-weight: 700; }
+      .ok { color: var(--ok); }
+      .bad { color: var(--bad); }
+      .dim { color: var(--dim); }
+      .small { font-size: 0.82rem; line-height: 1.7; }
+      .btn {
+        display: inline-block;
+        margin: 8px 10px 0 0;
+        padding: 11px 18px;
+        border-radius: 10px;
+        background: #232330;
+        color: var(--text);
+        text-decoration: none;
+        font-size: 0.95rem;
+      }
+      .btn.primary { background: #b83640; }
+      ol { margin: 6px 0 0; padding-left: 20px; }
+      li { margin: 5px 0; }
+      code { background: #1c1c27; padding: 1px 5px; border-radius: 4px; font-size: 0.85em; }
+    </style>
+  </head>
+  <body>
+    <h1>连接检查</h1>
+    <div class="sub">先确认这台设备能不能连上服务器，再去选座位。</div>
+
+    <div class="card">
+      <div class="row"><span>服务器地址</span><b id="origin">—</b></div>
+      <div class="row"><span>网络状态</span><b id="online">—</b></div>
+      <div class="row"><span>WebSocket</span><b id="ws" class="dim">正在连接…</b></div>
+      <div class="row"><span>耗时</span><b id="ms" class="dim">—</b></div>
+      <div id="hint" class="small dim" style="margin-top: 10px"></div>
+    </div>
+
+    <div class="card small">
+      <b>连不上时按顺序查</b>
+      <ol>
+        <li>手机和服务器是不是同一个 Wi-Fi？跨网络必须用公网地址（见服务器控制台）。</li>
+        <li>是不是开了 VPN / Clash / 公司代理？关掉，或把本机 IP 加进直连。</li>
+        <li>Wi-Fi 是不是「访客网络 / AP 隔离」？访客网络里设备互相不通，换主网络。</li>
+        <li>电脑防火墙有没有放行 TCP 3000（Windows 第一次启动会弹窗，点允许）。</li>
+        <li>地址栏是不是 <code>https</code> 而服务是 <code>http</code>？协议要对上。</li>
+      </ol>
+    </div>
+
+    <a class="btn primary" href="/player">打开手机端</a>
+    <a class="btn" href="/host">打开平板端</a>
+    <a class="btn" href="/connect">重新检查</a>
+
+    <script>
+      const $ = (id) => document.getElementById(id);
+      $('origin').textContent = location.origin;
+      $('online').textContent = navigator.onLine ? '在线' : '离线';
+      $('online').className = navigator.onLine ? 'ok' : 'bad';
+
+      const started = Date.now();
+      const proto = location.protocol === 'https:' ? 'wss://' : 'ws://';
+      let done = false;
+      let ws;
+      try {
+        ws = new WebSocket(proto + location.host + '/ws');
+      } catch (e) {
+        fail('无法创建 WebSocket：' + e.message);
+      }
+      const timer = setTimeout(() => fail('8 秒内没有收到服务器回应'), 8000);
+
+      function ok(text) {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        $('ws').textContent = text;
+        $('ws').className = 'ok';
+        $('ms').textContent = Date.now() - started + ' ms';
+        $('hint').textContent = '这条连接能用了，去选座位吧。';
+      }
+      function fail(text) {
+        if (done) return;
+        done = true;
+        clearTimeout(timer);
+        $('ws').textContent = '失败：' + text;
+        $('ws').className = 'bad';
+        $('ms').textContent = Date.now() - started + ' ms';
+        $('hint').textContent = '服务器没回应。先按下面五条排查，再点「重新检查」。';
+      }
+
+      if (ws) {
+        ws.addEventListener('open', () => {
+          ws.send(JSON.stringify({ t: 'hello', role: 'guest' }));
+        });
+        ws.addEventListener('message', (ev) => {
+          let msg;
+          try {
+            msg = JSON.parse(ev.data);
+          } catch {
+            return;
+          }
+          if (msg.t === 'welcome') ok('已连接（' + (msg.role || 'guest') + '）');
+          if (msg.t === 'error') fail(msg.message || '服务器报错');
+        });
+        ws.addEventListener('error', () => fail('连接被拒绝或网络不通'));
+        ws.addEventListener('close', () => fail('连接被关闭'));
+      }
+
+      window.addEventListener('online', () => location.reload());
+    </script>
+  </body>
+</html>

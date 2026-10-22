@@ -1,0 +1,7 @@
+# 把 game.example.com 换成你自己的域名，Caddy 会自动申请 HTTPS
+# WebSocket（/ws）Caddy 默认会转发 Upgrade，不用额外写
+
+game.example.com {
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:3000
+}

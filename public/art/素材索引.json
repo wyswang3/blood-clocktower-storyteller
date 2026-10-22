@@ -1,0 +1,204 @@
+{
+  "schema_version": 2,
+  "note": "页面用的是 roles/<id>.jpg（1024×1024，质量 86）与 bg-*.jpg（最长边 1600）。原始大图在 图片素材包/原图/，不参与网页加载。",
+  "roles": {
+    "washerwoman": {
+      "file": "roles/washerwoman.jpg",
+      "source": "图片素材包/原图/角色_洗衣妇.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 220453
+    },
+    "librarian": {
+      "file": "roles/librarian.jpg",
+      "source": "图片素材包/原图/角色_图书管理员.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 191819
+    },
+    "investigator": {
+      "file": "roles/investigator.jpg",
+      "source": "图片素材包/原图/角色_调查员.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 199024
+    },
+    "chef": {
+      "file": "roles/chef.jpg",
+      "source": "图片素材包/原图/角色_厨师.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 226913
+    },
+    "empath": {
+      "file": "roles/empath.jpg",
+      "source": "图片素材包/原图/角色_共情者.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 154166
+    },
+    "fortune_teller": {
+      "file": "roles/fortune_teller.jpg",
+      "source": "图片素材包/原图/角色_占卜师.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 202337
+    },
+    "undertaker": {
+      "file": "roles/undertaker.jpg",
+      "source": "图片素材包/原图/角色_掘墓人.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 220544
+    },
+    "monk": {
+      "file": "roles/monk.jpg",
+      "source": "图片素材包/原图/角色_僧侣.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 179533
+    },
+    "ravenkeeper": {
+      "file": "roles/ravenkeeper.jpg",
+      "source": "图片素材包/原图/角色_守鸦人.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 200288
+    },
+    "virgin": {
+      "file": "roles/virgin.jpg",
+      "source": "图片素材包/原图/角色_贞洁烈女.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 183112
+    },
+    "slayer": {
+      "file": "roles/slayer.jpg",
+      "source": "图片素材包/原图/角色_杀手.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 194394
+    },
+    "soldier": {
+      "file": "roles/soldier.jpg",
+      "source": "图片素材包/原图/角色_士兵.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 224184
+    },
+    "mayor": {
+      "file": "roles/mayor.jpg",
+      "source": "图片素材包/原图/角色_镇长.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 163356
+    },
+    "butler": {
+      "file": "roles/butler.jpg",
+      "source": "图片素材包/原图/角色_管家.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 158664
+    },
+    "drunk": {
+      "file": "roles/drunk.jpg",
+      "source": "图片素材包/原图/角色_酒鬼.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 188072
+    },
+    "recluse": {
+      "file": "roles/recluse.jpg",
+      "source": "图片素材包/原图/角色_隐士.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 190842
+    },
+    "saint": {
+      "file": "roles/saint.jpg",
+      "source": "图片素材包/原图/角色_圣徒.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 194648
+    },
+    "poisoner": {
+      "file": "roles/poisoner.jpg",
+      "source": "图片素材包/原图/角色_投毒者.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 189259
+    },
+    "spy": {
+      "file": "roles/spy.jpg",
+      "source": "图片素材包/原图/角色_间谍.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 174537
+    },
+    "scarlet_woman": {
+      "file": "roles/scarlet_woman.jpg",
+      "source": "图片素材包/原图/角色_红唇女郎.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 159050
+    },
+    "baron": {
+      "file": "roles/baron.jpg",
+      "source": "图片素材包/原图/角色_男爵.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 195258
+    },
+    "imp": {
+      "file": "roles/imp.jpg",
+      "source": "图片素材包/原图/角色_小恶魔.png",
+      "width": 1024,
+      "height": 1024,
+      "bytes": 177190
+    }
+  },
+  "backgrounds": {
+    "bg-tablet-lobby": {
+      "file": "bg-tablet-lobby.jpg",
+      "source": "图片素材包/原图/背景_平板_大厅.jpg",
+      "width": 1600,
+      "height": 900,
+      "bytes": 196566
+    },
+    "bg-tablet-day": {
+      "file": "bg-tablet-day.jpg",
+      "source": "图片素材包/原图/背景_平板_白天.jpg",
+      "width": 1600,
+      "height": 900,
+      "bytes": 219494
+    },
+    "bg-tablet-night": {
+      "file": "bg-tablet-night.jpg",
+      "source": "图片素材包/原图/背景_平板_夜晚.jpg",
+      "width": 1600,
+      "height": 900,
+      "bytes": 230502
+    },
+    "bg-tablet-end": {
+      "file": "bg-tablet-end.jpg",
+      "source": "图片素材包/原图/背景_平板_结算.jpg",
+      "width": 1600,
+      "height": 900,
+      "bytes": 231689
+    },
+    "bg-phone-night": {
+      "file": "bg-phone-night.jpg",
+      "source": "图片素材包/原图/背景_手机_夜晚.jpg",
+      "width": 900,
+      "height": 1600,
+      "bytes": 119692
+    },
+    "bg-phone-role": {
+      "file": "bg-phone-role.jpg",
+      "source": "图片素材包/原图/背景_手机_身份卡.jpg",
+      "width": 900,
+      "height": 1600,
+      "bytes": 205378
+    }
+  }
+}

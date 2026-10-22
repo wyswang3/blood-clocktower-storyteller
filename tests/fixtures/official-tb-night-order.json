@@ -1,0 +1,7 @@
+{
+  "source": "https://raw.githubusercontent.com/ThePandemoniumInstitute/botc-release/main/resources/data/nightsheet.json",
+  "checkedAt": "2026-10-22",
+  "policy": "官方公开通用表筛选暗流涌动；不采用旧实体版的特殊排序",
+  "firstNight": ["poisoner", "washerwoman", "librarian", "investigator", "chef", "empath", "fortune_teller", "butler", "spy"],
+  "otherNight": ["poisoner", "monk", "scarlet_woman", "imp", "ravenkeeper", "empath", "fortune_teller", "undertaker", "butler", "spy"]
+}

@@ -1,0 +1,31 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>0.3.0 官方规则核对与交付验证</title><style>:root{color-scheme:light}*{box-sizing:border-box}body{margin:0;background:#f3f5f9;color:#202b3b;font:16px/1.85 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1000px;margin:30px auto;padding:36px 46px;background:white;border:1px solid #dfe5ee;border-radius:16px}nav{font-size:14px;color:#627086;border-bottom:1px solid #e4e8ef;padding-bottom:14px;margin-bottom:24px}nav a{margin-right:16px}a{color:#245fa9;text-decoration:underline;text-underline-offset:3px}h1{font-size:30px;line-height:1.4;color:#142f53;margin:0 0 18px}h2{font-size:22px;line-height:1.5;margin:34px 0 12px;border-bottom:1px solid #e2e8f0;padding-bottom:8px}h3{font-size:18px;margin-top:24px}p{margin:12px 0}li{margin:6px 0}code{font:14px/1.65 ui-monospace,Consolas,monospace;background:#edf1f7;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{background:#182a40;color:#f1f5fc;padding:17px 20px;border-radius:10px;overflow:auto;white-space:pre;line-height:1.65}pre code{background:none;color:inherit;padding:0;overflow-wrap:normal}blockquote{margin:18px 0;padding:10px 18px;border-left:4px solid #819ab9;background:#f0f5fb;color:#405670}.table-wrap{overflow:auto;margin:18px 0}table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.7}th,td{border:1px solid #dce3ec;text-align:left;vertical-align:top;padding:10px 13px}th{background:#edf2f8;white-space:nowrap}tr:nth-child(even){background:#fafbfd}.cards{display:grid;gap:16px;margin:25px 0}.card{display:block;border:1px solid #d7e1ed;border-radius:12px;padding:20px 24px;text-decoration:none;background:#fafcfe}.card strong{display:block;font-size:20px;margin-bottom:4px}.card span{color:#52647b}.meta{color:#617089;font-size:14px}footer{margin-top:35px;padding-top:15px;border-top:1px solid #dfe5ee;font-size:13px;color:#6d7b8d}@media(max-width:650px){body{background:white}main{margin:0;padding:22px 18px;border:0;border-radius:0}h1{font-size:26px}nav a{display:inline-block;margin-bottom:6px}th,td{min-width:100px}pre{padding:12px;font-size:13px}}@media print{@page{size:A4;margin:16mm}body{background:white;font-size:11pt}main{max-width:none;margin:0;padding:0;border:0}nav{display:none}h2,h3{break-after:avoid}table,pre{break-inside:avoid}a{color:inherit}.table-wrap{overflow:visible}pre{white-space:pre-wrap}footer{font-size:9pt}}</style></head><body><main><nav><a href="先读我.html">说明首页</a><span>血染钟楼 · v0.3.0</span></nav><h1>0.3.0 官方规则核对与交付验证</h1>
+<p>日期：2026-10-22。范围与官方链接见 <a href="docs/04_%E6%9A%97%E6%B5%81%E6%B6%8C%E5%8A%A8%E8%A7%84%E5%88%99%E6%A0%B8%E5%AF%B9.html">逐角色核对</a>。</p>
+<h2>已修复与补齐</h2>
+<ul>
+<li>5–6 人不发邪恶阵营信息或三张伪装；7 人以上只发对应类别与座位，不直接泄露爪牙角色；恶魔有三个未在场善良提示，排除酒鬼手持牌。</li>
+<li>夜序对齐 TPI 当前公开通用表，明确与旧实体表的差异；保存独立依据快照。</li>
+<li>夜间“任意玩家”允许死者；自选仅遵守角色明确限制。死者不再死亡、不错误唤醒守鸦人。</li>
+<li>修复僧侣保护下自刀、健康红唇优先接管、中毒红唇仍可作为传位目标、新恶魔当夜不再行动。</li>
+<li>投毒者死亡或传位立即解毒，僧侣死亡立即解除保护。</li>
+<li>补齐镇长夜间转移及保护互动；保留三人日终无处决判胜。</li>
+<li>修复醉毒隐士/间谍误登记；支持死后登记、间谍外来者登记、掘墓人/守鸦人合法登记候选。</li>
+<li>洗衣妇可包含自己；首夜实际配对标记持久化，间谍魔典包含夜末状态与提示。</li>
+<li>管家误投仍计入，只私密提醒；死主人不解除限制，不根据醉毒撤掉提醒。</li>
+<li>死者可被提名/处决，区分处决与处决死亡，正确处理圣徒、镇长与掘墓人。</li>
+<li>杀手可选自己/死者、投票中使用与重复假宣称；真实能力仍一次，醉毒也消耗。</li>
+<li>夜间死亡到黎明才向普通视图公布；胜负即时结束后清除等待，不再发后置信息。</li>
+<li>保存每轮投票门槛，避免白天死亡后倒算旧未达标票。保留每日提名/被提名一次和禁止自提名。</li>
+<li>同步角色文案、三类手册、规则核对、README、技能判定和八人男爵配比表的文档错误。</li>
+</ul>
+<h2>测试结果</h2>
+<div class="table-wrap"><table><thead><tr><th>检查</th><th>结果</th></tr></thead><tbody><tr><td>原引擎回归</td><td>86 项通过</td></tr><tr><td>新规则专项</td><td>62 项通过</td></tr><tr><td>AI 请求与生命周期</td><td>21 项通过，全部使用模拟服务</td></tr><tr><td>页面渲染与交互</td><td>31 项通过</td></tr><tr><td>服务器入口</td><td>5 项通过</td></tr><tr><td>隧道解析与替身</td><td>3 项通过</td></tr><tr><td>合计</td><td>208 项通过</td></tr><tr><td>自动对局</td><td>7 人 100 局、5 人 40 局、12 人 20 局，均 <code>badGames:0</code></td></tr><tr><td>整局走查</td><td>发牌到结束、每帧真实页面渲染检查通过</td></tr><tr><td>本地联机</td><td>真实 HTTP/WebSocket、七模拟手机、平板、模拟 DeepSeek，全部通过</td></tr></tbody></table></div>
+<p><code>npm test</code> 的前六组、走查和 100 局模拟成功；该受限执行环境无法启动最后的联机测试服务，整条命令因此退出 1。随后在获准启动本地服务的环境单独运行 <code>node tests/e2e.js</code>，退出 0。不能把首次环境失败记作整条命令一次通过。</p>
+<p>联机还覆盖了 AI 认证超过 10 秒不断开、未认证仍超时踢出、重连、夜间 API 请求、私密隔离及房主提前结束权限。没有真实 DeepSeek 调用或费用。</p>
+<p>日志在工作区 <code>artifacts/rules-full-regression.log</code>、<code>rules-audit-regression.log</code>、<code>rules-e2e-regression.log</code>、<code>rules-sim-5p-regression.log</code>、<code>rules-sim-12p-regression.log</code> 等，日志不提交私密仓库，也不进入安装包。</p>
+<h2>交付和兼容</h2>
+<p>运行包：<code>artifacts/blood-clocktower-android-ai.zip</code>。源码包：<code>artifacts/blood-clocktower-source-v0.3.0.zip</code>。旁置 <code>.manifest.json</code> 保存文件数、SHA-256 和每个解压条目的哈希；打包工具逐文件核对。旧 0.2.0 源码包与本轮改动前备份保留在工作区。</p>
+<p>说明首页嵌入四份手册、AI 配置与本轮记录，离线即可阅读。HTML 进行编码、结构和本地链接检查；没有宣称完成浏览器视觉验收。运行包不含完整测试与维护工具，源码包包含它们。</p>
+<p>存档 v2 新增恶魔伪装、配对标记和处决死亡区分；旧字段缺省兼容。不重发旧局身份或撤回已经发出的信息，升级请结束旧局、停止服务、备份私密文件后另开新局。</p>
+<p>GitHub 目标：<code>wyswang3/blood-clocktower-storyteller</code>。上传前通过官方 API 确认私密状态及当前账号写入权限；密钥与凭据不进入项目。源代码和发布附件以实际仓库结果为准。</p>
+<h2>尚未验收</h2>
+<p>安卓平板真实安装、浏览器及省电策略，七部真实手机跨运营商网络，真实 cloudflared 链路，真实 DeepSeek 账户仍待实测。模型目前只选择夜间信息候选；镇长、传位、日间登记由引擎自动裁量，不等于完整真人说书人。</p><footer>更新日期：2026-10-22 · 本页可离线阅读；以当前程序与验证记录为准。</footer></main></body></html>

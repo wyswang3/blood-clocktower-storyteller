@@ -1,0 +1,70 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>技术手册与进度管理</title><style>:root{color-scheme:light}*{box-sizing:border-box}body{margin:0;background:#f3f5f9;color:#202b3b;font:16px/1.85 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1000px;margin:30px auto;padding:36px 46px;background:white;border:1px solid #dfe5ee;border-radius:16px}nav{font-size:14px;color:#627086;border-bottom:1px solid #e4e8ef;padding-bottom:14px;margin-bottom:24px}nav a{margin-right:16px}a{color:#245fa9;text-decoration:underline;text-underline-offset:3px}h1{font-size:30px;line-height:1.4;color:#142f53;margin:0 0 18px}h2{font-size:22px;line-height:1.5;margin:34px 0 12px;border-bottom:1px solid #e2e8f0;padding-bottom:8px}h3{font-size:18px;margin-top:24px}p{margin:12px 0}li{margin:6px 0}code{font:14px/1.65 ui-monospace,Consolas,monospace;background:#edf1f7;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{background:#182a40;color:#f1f5fc;padding:17px 20px;border-radius:10px;overflow:auto;white-space:pre;line-height:1.65}pre code{background:none;color:inherit;padding:0;overflow-wrap:normal}blockquote{margin:18px 0;padding:10px 18px;border-left:4px solid #819ab9;background:#f0f5fb;color:#405670}.table-wrap{overflow:auto;margin:18px 0}table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.7}th,td{border:1px solid #dce3ec;text-align:left;vertical-align:top;padding:10px 13px}th{background:#edf2f8;white-space:nowrap}tr:nth-child(even){background:#fafbfd}.cards{display:grid;gap:16px;margin:25px 0}.card{display:block;border:1px solid #d7e1ed;border-radius:12px;padding:20px 24px;text-decoration:none;background:#fafcfe}.card strong{display:block;font-size:20px;margin-bottom:4px}.card span{color:#52647b}.meta{color:#617089;font-size:14px}footer{margin-top:35px;padding-top:15px;border-top:1px solid #dfe5ee;font-size:13px;color:#6d7b8d}@media(max-width:650px){body{background:white}main{margin:0;padding:22px 18px;border:0;border-radius:0}h1{font-size:26px}nav a{display:inline-block;margin-bottom:6px}th,td{min-width:100px}pre{padding:12px;font-size:13px}}@media print{@page{size:A4;margin:16mm}body{background:white;font-size:11pt}main{max-width:none;margin:0;padding:0;border:0}nav{display:none}h2,h3{break-after:avoid}table,pre{break-inside:avoid}a{color:inherit}.table-wrap{overflow:visible}pre{white-space:pre-wrap}footer{font-size:9pt}}</style></head><body><main><nav><a href="../先读我.html">说明首页</a><span>血染钟楼 · v0.3.0</span></nav><h1>技术手册与进度管理</h1>
+<p>版本：0.3.0｜基线日期：2026-10-22｜维护对象：后续 agent 与技术人员。</p>
+<p>本文是当前实现、证据和待办的主入口。功能状态以代码与本轮验证为准；早期《技术路线.md》《说书人设计.md》保留目标背景，不得把其中的规划当成已经实现。</p>
+<h2>1. 产品目标与当前范围</h2>
+<p>目标：几个朋友线下玩《血染钟楼》，无人需要专职退出当说书人。安卓平板同时运行服务器和公共屏，每人一部手机。朋友可各用流量或 Wi-Fi，加入同一个公网房间；也保留共同局域网方案。</p>
+<p>最终说书人应能在合法范围内主动安排信息、观察局势、照顾新手、引导讨论、营造气氛和解释复盘。后续主模型计划使用 DeepSeek。维持可解释性和推理空间，不能靠改写已发生事实强行平衡胜负。</p>
+<p>当前实现暗流涌动 22 角色、5–15 人、单进程单房间。0.3.0 完成当前范围的规则核对与修复，详情见 <a href="04_%E6%9A%97%E6%B5%81%E6%B6%8C%E5%8A%A8%E8%A7%84%E5%88%99%E6%A0%B8%E5%AF%B9.html">逐角色核对</a>。0.2.0 起已有夜间信息候选选择；完整 AI 主持、账号系统、原生游戏 APK、游戏内聊天和语音尚未实现。</p>
+<h2>2. 状态定义</h2>
+<div class="table-wrap"><table><thead><tr><th>状态</th><th>含义</th></tr></thead><tbody><tr><td>已实现并自动验证</td><td>有代码和对应测试证据</td></tr><tr><td>已实现，待真机/外部验证</td><td>本地逻辑已验证，但没有目标设备或真实服务证据</td></tr><tr><td>规划</td><td>尚无可交付的完整实现</td></tr><tr><td>待审计</td><td>当前有策略或实现，需要核对完整规则与边界</td></tr></tbody></table></div>
+<p>“配置完成”“模拟接口通过”“真实账号联通”“安卓全员可用”是四个不同结论，不能混用。</p>
+<h2>3. 功能清单</h2>
+<div class="table-wrap"><table><thead><tr><th>功能</th><th>当前状态</th><th>证据 / 限制</th></tr></thead><tbody><tr><td>公共平板与私密手机界面</td><td>已实现并自动验证</td><td>渲染、交互与本地 HTTP/WebSocket 测试</td></tr><tr><td>发牌、身份确认、夜间选人、白天提名投票</td><td>已实现并自动验证</td><td>逐角色核对、规则专项、整局、模拟和联机；登记组合非穷举</td></tr><tr><td>酒鬼只伪装未在场镇民</td><td>已实现并自动验证</td><td>两条发牌路径共用校验，5–15 人、多种子覆盖</td></tr><tr><td>三人残局、红唇门槛、幽灵票修复</td><td>已实现并自动验证</td><td>边界、超时、恢复、进度与票型回归</td></tr><tr><td>每日提名限制、自提禁止</td><td>已实现并自动验证</td><td>用户确认的本桌约定；次数持久化、隔日重置</td></tr><tr><td>房主手动提前宣布</td><td>已实现并自动验证</td><td>指定胜方与二次确认；普通玩家不能调用</td></tr><tr><td>断线恢复、JSON 存档</td><td>已实现并自动验证</td><td>座位 token、事件游标、旧投票结构兼容</td></tr><tr><td>安卓启动脚本和网卡异常兜底</td><td>已实现，待安卓真机验证</td><td>无 Android shell、热点和后台存活的真机证据</td></tr><tr><td>公网隧道和房间链接发布/撤回</td><td>已实现，待真实公网验证</td><td>受控隧道替身及本地链接传播测试，不代表运营商可达</td></tr><tr><td>DeepSeek 请求适配和私密候选选择</td><td>已实现并自动验证</td><td>本地模拟 HTTP API 联通，真实密钥未联调</td></tr><tr><td>平板 API 连通测试按钮</td><td>已实现并自动验证</td><td>一次请求、不发送对局数据；需配置后使用</td></tr><tr><td>AI 超时回退、去重、取消、迟到结果隔离</td><td>已实现并自动验证</td><td>无重试收费循环；12 秒请求上限、15 秒引擎兜底</td></tr><tr><td>公开主持、氛围文案、规则问答</td><td>规划</td><td>当前无独立公开模型调用</td></tr><tr><td>语音、自动听讨论、游戏内聊天室</td><td>规划</td><td>当前没有；不同地点需另行语音工具</td></tr><tr><td>角色登记与特殊能力</td><td>标准机制已核对并自动验证</td><td>增加醉毒、死后登记、镇长转移与传位优先；自动策略与完整 AI 裁量分开</td></tr><tr><td>白天以后再确定酒鬼</td><td>实验房规规划</td><td>不进入默认标准模式，不得静默改身份</td></tr></tbody></table></div>
+<h2>4. 架构与数据流</h2>
+<pre><code>手机 / 平板浏览器
+  → HTTP 页面与 WebSocket 消息
+  → server.js：座位认证、房主权限、广播、持久化
+  → Game：唯一对局状态源
+   → setup / night / day：发牌、夜间与白天结算
+   → state：公共、座位、说书人三类视图
+   → ai-storyteller：监听待裁量请求
+       → 引擎生成候选 → DeepSeek 选择候选编号
+       → 校验编号和请求仍有效 → 发给对应手机</code></pre>
+<p>跨网络路径：浏览器 → 临时公网 HTTPS 地址 → cloudflared → 平板本机 HTTP 服务。隧道只提供可达性，不替代座位认证。平板本机访问地址与手机分享地址分开；公网地址不是房间存档的一部分。</p>
+<p>服务端使用 Node 18+ 内置模块，无第三方运行依赖。Termux 使用官方 <code>nodejs-lts</code> 包。端到端测试使用内置 WebSocket，建议 Node 22+，本轮为 Node 24.20.0；最低运行版本不等于测试工具最低版本。</p>
+<h2>5. 文件导航</h2>
+<div class="table-wrap"><table><thead><tr><th>路径</th><th>职责</th></tr></thead><tbody><tr><td><code>server.js</code></td><td>HTTP、WebSocket、房主操作、房间链接、AI 适配实例与存档</td></tr><tr><td><code>engine/setup.js</code></td><td>配比、随机发牌、指定板子、统一酒鬼假身份入口</td></tr><tr><td><code>engine/game.js</code></td><td>生命周期、事件、投票、AI 请求与私密决定存档</td></tr><tr><td><code>engine/night.js</code></td><td>夜序、能力执行、信息卡、<code>informationOptions</code> 候选生成</td></tr><tr><td><code>engine/day.js</code></td><td>计票、红唇接管、处决和胜负；投票资格兼容函数</td></tr><tr><td><code>engine/state.js</code></td><td>公共、单座位、说书人视图；禁止私密字段溢入公共视图</td></tr><tr><td><code>lib/deepseek.js</code></td><td>配置解析、端点校验、JSON 请求、超时和响应校验</td></tr><tr><td><code>lib/ai-storyteller.js</code></td><td>请求去重、生命周期取消、候选选择、回退、私密记录</td></tr><tr><td><code>lib/ws.js</code> / <code>lib/tunnel.js</code></td><td>WebSocket 最小实现 / 可选 cloudflared 进程</td></tr><tr><td><code>public/host.js</code> / <code>player.js</code> / <code>common.js</code></td><td>平板、手机、连接恢复与公共 UI</td></tr><tr><td><code>ai.config.example.json</code></td><td>可公开模板，密钥为空</td></tr><tr><td><code>ai.local.json</code></td><td>用户私密配置，不进源码交付包或公开网页</td></tr><tr><td><code>room.json</code></td><td>真实身份、token、对局和裁量记录，必须按私密数据处理</td></tr><tr><td><code>tests/</code></td><td>单元、专项规则、官方夜序快照、接口、渲染、模拟和本地端到端</td></tr><tr><td><code>docs/</code></td><td>三类说明；Markdown 为编辑源，HTML 为阅读版</td></tr><tr><td><code>tools/build-docs.js</code></td><td>更新 HTML 阅读版和根目录阅读入口</td></tr><tr><td><code>tools/package-android.ps1</code></td><td>Windows 上按白名单打包，并逐文件核验哈希</td></tr></tbody></table></div>
+<h2>6. DeepSeek 配置和协议</h2>
+<p>本机配置见 <a href="../DeepSeek%E9%85%8D%E7%BD%AE.html">DeepSeek配置.md</a>。环境变量优先：<code>DEEPSEEK_API_KEY</code>、<code>DEEPSEEK_BASE_URL</code>、<code>DEEPSEEK_MODEL</code>、<code>AI_TIMEOUT_MS</code>、<code>AI_ENABLED</code>。默认关闭，密钥有效配置后才允许从平板启用。默认模型 <code>deepseek-flash</code>，以本次查询官方文档为依据，不应永久硬编码模型可用性假设。</p>
+<p>请求：<code>POST {baseUrl}/chat/completions</code>，Bearer 认证、非流式、非思考模式、JSON 输出，最多 512 输出 token。普通端点要求 HTTPS；仅允许本机 HTTP 作为测试替身。</p>
+<p>模型输出：<code>{&quot;optionId&quot;:&quot;option-0&quot;,&quot;reason&quot;:&quot;私密的简短裁量依据&quot;}</code>。只使用通过验证的编号，实际卡片取自服务器候选；多余的模型卡片和身份字段不会被采用。无裁量空间时不调用服务商。</p>
+<p>房主 WebSocket 消息：<code>{t:&#39;host&#39;, action:&#39;setAI&#39;, enabled:true|false}</code>；单次连通测试为 <code>{t:&#39;host&#39;, action:&#39;testAI&#39;}</code>。均受房主 PIN 会话权限保护。测试发送空对局上下文，返回 <code>ai-test</code> 消息；不修改游戏。</p>
+<p><code>public.ai</code> 仅公开 <code>configured / enabled / state</code>。<code>room.aiDecisions</code> 保留最近 100 条私密记录。API Key、座位 token、房主 PIN 不进入模型请求；魔典会进入私密裁量请求，这是功能所需，不得把该上下文复用于未来的公开主持。</p>
+<p>候选由信息生成器采样去重，加入健康隐士/间谍每次互动可变化的登记；默认自动模式仍用固定合法策略，不穷举所有组合。镇长转移、传位和日间登记由引擎自动选，模型无权直接执行特殊效果。旧可信外部 <code>st-info</code> 协议允许自由卡片，与受约束的 DeepSeek 适配器是不同入口。</p>
+<h2>7. 必须守住的约束</h2>
+<ul>
+<li>酒鬼真实角色仍是外来者，显示角色只能是本局未在场的镇民。模型没有改身份的权限。</li>
+<li>清醒健康能力的结果不能自由造假；醉毒可给真或假信息，真实能力效果仍按规则执行。</li>
+<li>自动结算不按善恶票数直接结束三人局。提前宣布使用已授权的房主入口。</li>
+<li>提名“每轮”在本项目指每个白天，每人一次提名、一次被提名；禁止自提是用户确认的本桌约定。</li>
+<li>幽灵票仅同意消耗，反对和未投不消耗；本轮资格分母不能随投票缩小。</li>
+<li>一条请求只执行一次；超时、跳过、模式切换、暂停、重开后迟到结果不得覆盖当前请求。</li>
+<li>身份、醉毒、魔典、AI 理由不得进入公共屏；用户数据、模型输出和玩家名称都按数据处理。</li>
+<li>禁止根据旧设计稿直接实现白天改酒鬼、任意改红鲱鱼或改写既有事实。</li>
+</ul>
+<h2>8. 验证基线</h2>
+<p>0.3.0 验证基线：引擎 86 项、规则专项 62 项、AI 21 项、UI 31 项、入口 5 项、隧道 3 项，共 <strong>208 项</strong>；另验七人 100 局、五人 40 局、十二人 20 局与发牌至结束走查。最终通过结果和退出码以 <a href="../%E5%AE%98%E6%96%B9%E8%A7%84%E5%88%99%E6%A0%B8%E5%AF%B9%E9%AA%8C%E8%AF%81_20261022.html">本轮验证记录</a> 为准。</p>
+<p>本地端到端测试启动真实游戏服务、七个模拟手机、平板、说书人协议连接及一个模拟 DeepSeek HTTP 服务，验证独立 API 测试、夜间真实 HTTP 请求、私密信息隔离、投票、重连、十秒认证超时和房主权限。它没有访问真实 DeepSeek，没有产生真实 API 费用。</p>
+<p>常规入口：<code>npm test</code>。无 npm 的环境可逐个执行对应测试文件；Windows 受限环境可能无法启动子进程，应使用允许启动本地测试服务的环境，不能把权限失败误报为功能通过。</p>
+<p>真实 DeepSeek、安卓 shell/浏览器/后台策略、不同运营商公网链路待验。证据见本轮验证记录、历史 <code>AI接入验证_20261022.md</code> 和 <code>artifacts/rules-*.log</code>。</p>
+<h2>9. 路线与任务登记</h2>
+<div class="table-wrap"><table><thead><tr><th>编号</th><th>优先级</th><th>工作</th><th>状态</th><th>完成标准</th></tr></thead><tbody><tr><td>M01</td><td>P0</td><td>用户安卓平板安装与七手机验收</td><td>待真机</td><td>按安装指南完成全员首夜、投票、后台恢复，记录系统和网络</td></tr><tr><td>M02</td><td>P0</td><td>真实 DeepSeek 账户联调</td><td>待外部</td><td>平板测试按钮成功，夜间有裁量请求完成，失败回退可用</td></tr><tr><td>M03</td><td>P0</td><td>各自流量/Wi-Fi 的公网房间</td><td>待外部</td><td>至少两种网络加入同桌，切网重连可用，记录隧道中断情况</td></tr><tr><td>M04</td><td>P1</td><td>22 角色、夜序、胜负规则审计</td><td>已完成本轮范围</td><td>官方依据逐项登记，62 项专项回归；非穷举全部说书人裁量策略</td></tr><tr><td>M05</td><td>P1</td><td>丰富候选与特殊能力 AI 入口</td><td>部分完成</td><td>已扩展误登记信息；继续接入镇长转移、传位和日间登记的受约束裁量</td></tr><tr><td>M06</td><td>P1</td><td>公开主持与规则问答</td><td>规划</td><td>独立公开上下文，普通/醉毒玩家都得到正确规则说明，断网可回退</td></tr><tr><td>M07</td><td>P2</td><td>更稳定的公网部署与断线体验</td><td>规划</td><td>现场实测后决定固定隧道或服务器，不能先承诺移动网络可达</td></tr><tr><td>M08</td><td>P2</td><td>语音与桌面信息输入</td><td>规划</td><td>先明确主动提交/录音范围，评估带宽和延迟，再实现</td></tr><tr><td>M09</td><td>P3</td><td>延后确定身份等实验房规</td><td>规划</td><td>开局明示、候选账本、一致性检查、独立测试，不污染默认模式</td></tr></tbody></table></div>
+<p>每次更新记录：版本/日期、需求、改动文件、测试及退出码、外部验证条件、未解决事项、配置和存档兼容性、交付包哈希。状态只有取得对应证据后才能从“待验”改为“通过”；不写猜测的完成日期。</p>
+<h2>10. 更新、打包与回滚</h2>
+<ol start="1">
+<li>先读根目录 <code>AGENTS.md</code>、本文和最近验证记录，检查当前文件；没有 Git 仓库时先做精确文件备份。</li>
+<li>修改前重现问题，新增能区分错误与正确行为的测试。避免只检验实现本身。</li>
+<li>运行受影响测试及必要的整局、隔离和联机验证；记录权限限制与未测平台。</li>
+<li>同步三份说明的功能状态、版本和操作文案，运行 <code>node tools/build-docs.js</code>。</li>
+<li>Windows PowerShell 7.2+ 中运行 <code>./tools/package-android.ps1</code>；检查清单与 SHA-256。按白名单收录运行文件、说明和空密钥模板。加 <code>-IncludeTests -OutputName blood-clocktower-source-v0.3.0.zip</code> 生成源码包。私密仓库源码与发布附件分别交付，不把备份和测试日志提交。</li>
+<li>严禁把 <code>ai.local.json</code>、<code>room.json</code>、日志、原图备份和测试房间打进普通用户包。技术人员从源码工作区维护测试，用户包不含完整测试源码。</li>
+<li>更新用户设备前停止旧服务，备份旧目录与私密配置/存档。先验小测试，再验全员局；出现兼容问题时停止服务后恢复旧目录。</li>
+</ol>
+<p>新增存档字段须给旧存档默认值；改变语义时增加格式版本和迁移说明，不能静默重发身份或恢复已结束旧局。升级密钥配置要保留用户自己的文件，不能用模板覆盖。</p>
+<h2>11. 已知维护风险</h2>
+<p>手写 WebSocket、单文件 JSON 落盘和单房间设计适合当前小规模场景，但不等于生产级多人平台。公网链接可被持有者打开，PIN 主要防误操作。当前目标是朋友局可用、易运行和可维护，不扩大到多租户或商业账号体系。</p>
+<p>当前角色机制已逐项核对，但可选登记和裁量组合并非穷举。早期浏览器代理报告不能替代安卓实测。新角色、旅行者、传奇、其他剧本都不在本轮范围；不能把本轮测试扩大解释成已支持这些内容。</p>
+<h2>12. 0.3.0 数据与规则变更</h2>
+<p>夜序按当前官方公开通用表筛选本剧本，间谍移至夜末，掘墓人在共情者/占卜师之后；旧实体表位置见核对说明。夜间死亡对引擎立即生效，对普通视图到黎明才公布。</p>
+<p>存档 <code>v:2</code> 新增 <code>demonBluffs</code> 与 <code>infoReminders</code>，旧存档默认空列表/对象，不追补三张牌或重发身份。<code>day.executed.died</code> 区分处决与因处决死亡；旧记录缺省按原先实际死亡语义读取。每轮提名结果保存 <code>threshold</code>，避免白天死亡后倒改旧门槛。</p>
+<p><code>slayerShots</code> 仅记录宣称，真实次数由 <code>slayerUsed</code> 判定；允许投票中行动和重复假宣称，结束白天后拒绝。管家票不作废，不再生成 <code>butlerVoided</code>；私密提醒不以醉毒决定是否出现。旧局曾发出的信息无法撤回，建议结束旧局后更新、另开新局。</p><footer>更新日期：2026-10-22 · 本页可离线阅读；以当前程序与验证记录为准。</footer></main></body></html>

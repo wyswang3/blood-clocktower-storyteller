@@ -1,0 +1,88 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>平板主人的安装与测试指南</title><style>:root{color-scheme:light}*{box-sizing:border-box}body{margin:0;background:#f3f5f9;color:#202b3b;font:16px/1.85 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1000px;margin:30px auto;padding:36px 46px;background:white;border:1px solid #dfe5ee;border-radius:16px}nav{font-size:14px;color:#627086;border-bottom:1px solid #e4e8ef;padding-bottom:14px;margin-bottom:24px}nav a{margin-right:16px}a{color:#245fa9;text-decoration:underline;text-underline-offset:3px}h1{font-size:30px;line-height:1.4;color:#142f53;margin:0 0 18px}h2{font-size:22px;line-height:1.5;margin:34px 0 12px;border-bottom:1px solid #e2e8f0;padding-bottom:8px}h3{font-size:18px;margin-top:24px}p{margin:12px 0}li{margin:6px 0}code{font:14px/1.65 ui-monospace,Consolas,monospace;background:#edf1f7;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{background:#182a40;color:#f1f5fc;padding:17px 20px;border-radius:10px;overflow:auto;white-space:pre;line-height:1.65}pre code{background:none;color:inherit;padding:0;overflow-wrap:normal}blockquote{margin:18px 0;padding:10px 18px;border-left:4px solid #819ab9;background:#f0f5fb;color:#405670}.table-wrap{overflow:auto;margin:18px 0}table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.7}th,td{border:1px solid #dce3ec;text-align:left;vertical-align:top;padding:10px 13px}th{background:#edf2f8;white-space:nowrap}tr:nth-child(even){background:#fafbfd}.cards{display:grid;gap:16px;margin:25px 0}.card{display:block;border:1px solid #d7e1ed;border-radius:12px;padding:20px 24px;text-decoration:none;background:#fafcfe}.card strong{display:block;font-size:20px;margin-bottom:4px}.card span{color:#52647b}.meta{color:#617089;font-size:14px}footer{margin-top:35px;padding-top:15px;border-top:1px solid #dfe5ee;font-size:13px;color:#6d7b8d}@media(max-width:650px){body{background:white}main{margin:0;padding:22px 18px;border:0;border-radius:0}h1{font-size:26px}nav a{display:inline-block;margin-bottom:6px}th,td{min-width:100px}pre{padding:12px;font-size:13px}}@media print{@page{size:A4;margin:16mm}body{background:white;font-size:11pt}main{max-width:none;margin:0;padding:0;border:0}nav{display:none}h2,h3{break-after:avoid}table,pre{break-inside:avoid}a{color:inherit}.table-wrap{overflow:visible}pre{white-space:pre-wrap}footer{font-size:9pt}}</style></head><body><main><nav><a href="../先读我.html">说明首页</a><span>血染钟楼 · v0.3.0</span></nav><h1>平板主人的安装与测试指南</h1>
+<p>适用版本：0.3.0｜更新日期：2026-10-22｜设备：安卓平板。</p>
+<p>这台平板负责运行游戏和显示公共局面。你自己也可以拿手机参加游戏；平板操作不需要你知道其他人的身份。程序通过 Termux 启动，游戏界面在浏览器打开。</p>
+<h2>一、先准备这些</h2>
+<ul>
+<li>安卓平板，建议 Android 7 或更新版本，保留足够空间并准备充电器。</li>
+<li>本次交付的 <code>blood-clocktower-android-ai.zip</code>。</li>
+<li>Termux，按 <a href="https://github.com/termux/termux-app#installation">官方安装说明</a> 选择来源。</li>
+<li>安装时需要互联网。聚会时若各用自己的网络，平板和每部手机都需要持续联网。</li>
+<li>使用 AI 时需要 DeepSeek API Key。先不填密钥，也能测试纯自动情报模式。</li>
+</ul>
+<h2>二、第一次安装</h2>
+<ol start="1">
+<li>把压缩包保存到平板的“下载 / Download”文件夹。若已在文件管理器解压，可以先打开其中的 <code>先读我.html</code> 看说明；运行程序仍按下面步骤进行。</li>
+<li>安装并打开 Termux。逐行复制执行：</li>
+</ol>
+<pre><code>pkg update
+pkg install nodejs-lts unzip nano
+termux-setup-storage</code></pre>
+<p>出现文件访问权限提示时允许。安装软件包时若询问是否继续，输入 <code>y</code> 并回车。</p>
+<ol start="3">
+<li>解压到 Termux 自己的目录：</li>
+</ol>
+<pre><code>unzip ~/storage/downloads/blood-clocktower-android-ai.zip -d ~/
+cd ~/blood-clocktower
+sh start-android.sh</code></pre>
+<ol start="4">
+<li>看到“本机（平板）”地址和“房主 PIN”，表示服务已经启动。保持 Termux 运行，切换到浏览器，打开显示的本机地址。它类似 <code>http://127.0.0.1:3000/host?pin=四位数字</code>，PIN 以你屏幕上实际显示的为准。</li>
+<li>在系统设置中，允许 Termux 后台运行，把电池策略设为“不限制”或同等选项。聚会时让平板持续供电，避免清理后台。</li>
+</ol>
+<p>程序没有第三方 npm 依赖，不需要执行 <code>npm install</code>，也不需要安装额外的游戏 APK。</p>
+<h2>三、先做一个小测试</h2>
+<p>先不要急着开正式局，按顺序确认：</p>
+<div class="table-wrap"><table><thead><tr><th>检查</th><th>怎么做</th><th>通过标准</th></tr></thead><tbody><tr><td>平板服务</td><td>浏览器打开 <code>http://127.0.0.1:3000/health</code></td><td>显示包含 <code>&quot;ok&quot;:true</code> 的文字</td></tr><tr><td>公共屏</td><td>打开终端给出的本机房主地址</td><td>能看到大厅、人数与座位</td></tr><tr><td>手机入座</td><td>一部手机打开加入链接，输入名字并选座</td><td>平板能看到这部手机加入</td></tr><tr><td>后台运行</td><td>切到浏览器并等待几分钟</td><td>Termux 没被系统停止，手机没有持续掉线</td></tr></tbody></table></div>
+<p>这一步只证明基本连接。七个人是否都能顺畅使用，需要后面的全员测试。</p>
+<h2>四、让大家各用流量或 Wi-Fi</h2>
+<p>你们计划使用这一种。平板可以连谁的热点，也可以连普通 Wi-Fi；其他人各自有网即可。</p>
+<ol start="1">
+<li>回到 Termux，按 <code>Ctrl+C</code> 停止刚才的服务。Termux 可用底部扩展键的 CTRL 配合字母 C。</li>
+<li>第一次额外安装：</li>
+</ol>
+<pre><code>pkg install cloudflared</code></pre>
+<ol start="3">
+<li>启动公网房间：</li>
+</ol>
+<pre><code>cd ~/blood-clocktower
+sh start-android.sh --tunnel</code></pre>
+<ol start="4">
+<li>平板仍用“本机（平板）”地址。等待大厅出现类似 <code>https://某个名字.trycloudflare.com/player</code> 的加入链接，点“复制链接”或“分享链接”，只发给这桌朋友。</li>
+<li>找一部手机关闭 Wi-Fi、只用流量打开这个链接。如果能入座，再让其他人加入。</li>
+</ol>
+<p><strong>手机不能使用 <code>127.0.0.1</code>，也不要分享带 <code>pin=</code> 的房主地址。</strong> 平板重启隧道后公网地址会改变，要重新分享。临时隧道的网络可用性需要现场确认；打不开时先尝试更换平板网络。</p>
+<p>备用方案：让大家连同一个 Wi-Fi 或热点，用平板的局域网地址加入。关闭 AI 的局域网模式在安装完成后不需要互联网。</p>
+<h2>五、配置和单独测试 DeepSeek</h2>
+<ol start="1">
+<li>停止服务，在 Termux 执行：</li>
+</ol>
+<pre><code>cd ~/blood-clocktower
+cp ai.config.example.json ai.local.json
+nano ai.local.json</code></pre>
+<ol start="2">
+<li>只把 <code>apiKey</code> 后的空字符串填成你的密钥，其他内容可以保留。<code>enabled</code> 保持 <code>false</code>，方便每次手动启用。</li>
+<li>在 nano 中按 <code>Ctrl+O</code>、回车保存，<code>Ctrl+X</code> 退出。用原来的方式重启，例如 <code>sh start-android.sh --tunnel</code>。</li>
+<li>打开平板的“说书人操作”，点 <strong>“测试连接（1 次调用）”</strong>。这会向实际配置的服务发起一次请求，按服务商规则计费；测试不会发送对局身份，也不会开始游戏。</li>
+<li>看到“DeepSeek 连接测试成功”后，点“启用 AI”。如果失败，检查密钥、余额、模型名、接口地址和平板网络。</li>
+</ol>
+<p>“已配置”只代表读取到了配置；“测试成功”才表示这次 API 请求完成。模型默认 <code>deepseek-flash</code>，详细配置见 <a href="../DeepSeek%E9%85%8D%E7%BD%AE.html">DeepSeek配置.md</a>。密钥只留在平板，不用发给玩家。</p>
+<h2>六、聚会前的全员测试</h2>
+<p>请在正式玩的地点，至少完整走一夜：</p>
+<ol start="1">
+<li>平板和七部手机全部进入同一房间，每人固定一个座位。</li>
+<li>开始游戏，所有人都能按住查看自己的身份，并点“我知道了”。平板只显示确认人数。</li>
+<li>开始第一夜。被叫到的人完成选人或情报确认，其他人继续等待。检查自己能否读懂手机提示。</li>
+<li>确认夜间能自动走到天亮；不能只依靠连续“跳过”证明游戏正常。</li>
+<li>平板开始提名，一人提名另一人，大家投一次票。核对手机反馈和平板票数。</li>
+<li>让一部手机切后台再回来，检查是否恢复原座位；不要清浏览器数据。</li>
+<li>如开启 AI，观察有裁量空间的信息请求能否完成；失败时应自动发情报，不能把整桌卡住。固定答案不会调用模型。</li>
+<li>测试局结束后，点“重开一局”准备正式游戏，避免沿用测试身份。</li>
+</ol>
+<p>目前代码和模拟联机已验证；你们的安卓平板、浏览器及运营商网络尚未真机确认。上面这次全员测试是交付验收的一部分。</p>
+<h2>七、每次开局与结束</h2>
+<p>平时只需要：联网 → Termux 运行启动脚本 → 平板打开公共屏 → 分享当前加入链接 → 等人齐 → 开始游戏。启用 AI 前可以先测一次连接。</p>
+<p>白天的“开始提名”“结束提名”、进入下一夜仍由平板操作。全桌确认不用继续时，可点“提前结束”，输入“好人”或“坏人”并再次确认；会立即亮牌。</p>
+<p>结束后回 Termux 按 <code>Ctrl+C</code>，对局保存在 <code>room.json</code>。再次启动会恢复；“重开一局”用于重新发牌。</p>
+<h2>八、升级、备份和常见问题</h2>
+<p>升级应在一局结束后，先停止服务、保留旧目录。可在 Termux 执行 <code>cp -a ~/blood-clocktower ~/blood-clocktower-backup-20261022</code>；后续换未使用过的备份名。尤其保留 <code>room.json</code> 与 <code>ai.local.json</code>，不要发群里。0.3.0 可读旧存档，但不能撤回旧版已发信息；升级后另开一局、先做小测试。最新运行包也可从私密 GitHub 仓库的 Releases 下载，需有权限的账号登录。</p>
+<div class="table-wrap"><table><thead><tr><th>现象</th><th>先检查</th></tr></thead><tbody><tr><td>手机打不开链接</td><td>是否用了当前公网 <code>/player</code> 链接，是否误用了本机或旧隧道地址</td></tr><tr><td>平板能开、手机不能开</td><td>隧道是否就绪；局域网模式下是否同网、有设备隔离</td></tr><tr><td>切到浏览器后全部掉线</td><td>Termux 是否被省电或后台清理停止</td></tr><tr><td>无法自动识别平板 IP</td><td>共同局域网时从 Wi-Fi 详情查看；公网模式等待隧道链接</td></tr><tr><td>提示端口被占用</td><td>是否已经有一个游戏服务在运行；先回原终端停止旧服务</td></tr><tr><td>AI 失败但游戏继续</td><td>已回退，先继续对局；休息时检查配置和网络</td></tr><tr><td>手机丢失座位</td><td>先回原浏览器和原链接，不要立即清数据或重开</td></tr></tbody></table></div>
+<p>遇到问题，记录发生步骤、时间、手机和平板系统版本、错误提示即可。截图不要带身份卡、PIN 或 API Key。</p><footer>更新日期：2026-10-22 · 本页可离线阅读；以当前程序与验证记录为准。</footer></main></body></html>

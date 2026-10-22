@@ -1,0 +1,38 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DeepSeek 说书人接口配置</title><style>:root{color-scheme:light}*{box-sizing:border-box}body{margin:0;background:#f3f5f9;color:#202b3b;font:16px/1.85 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1000px;margin:30px auto;padding:36px 46px;background:white;border:1px solid #dfe5ee;border-radius:16px}nav{font-size:14px;color:#627086;border-bottom:1px solid #e4e8ef;padding-bottom:14px;margin-bottom:24px}nav a{margin-right:16px}a{color:#245fa9;text-decoration:underline;text-underline-offset:3px}h1{font-size:30px;line-height:1.4;color:#142f53;margin:0 0 18px}h2{font-size:22px;line-height:1.5;margin:34px 0 12px;border-bottom:1px solid #e2e8f0;padding-bottom:8px}h3{font-size:18px;margin-top:24px}p{margin:12px 0}li{margin:6px 0}code{font:14px/1.65 ui-monospace,Consolas,monospace;background:#edf1f7;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{background:#182a40;color:#f1f5fc;padding:17px 20px;border-radius:10px;overflow:auto;white-space:pre;line-height:1.65}pre code{background:none;color:inherit;padding:0;overflow-wrap:normal}blockquote{margin:18px 0;padding:10px 18px;border-left:4px solid #819ab9;background:#f0f5fb;color:#405670}.table-wrap{overflow:auto;margin:18px 0}table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.7}th,td{border:1px solid #dce3ec;text-align:left;vertical-align:top;padding:10px 13px}th{background:#edf2f8;white-space:nowrap}tr:nth-child(even){background:#fafbfd}.cards{display:grid;gap:16px;margin:25px 0}.card{display:block;border:1px solid #d7e1ed;border-radius:12px;padding:20px 24px;text-decoration:none;background:#fafcfe}.card strong{display:block;font-size:20px;margin-bottom:4px}.card span{color:#52647b}.meta{color:#617089;font-size:14px}footer{margin-top:35px;padding-top:15px;border-top:1px solid #dfe5ee;font-size:13px;color:#6d7b8d}@media(max-width:650px){body{background:white}main{margin:0;padding:22px 18px;border:0;border-radius:0}h1{font-size:26px}nav a{display:inline-block;margin-bottom:6px}th,td{min-width:100px}pre{padding:12px;font-size:13px}}@media print{@page{size:A4;margin:16mm}body{background:white;font-size:11pt}main{max-width:none;margin:0;padding:0;border:0}nav{display:none}h2,h3{break-after:avoid}table,pre{break-inside:avoid}a{color:inherit}.table-wrap{overflow:visible}pre{white-space:pre-wrap}footer{font-size:9pt}}</style></head><body><main><nav><a href="先读我.html">说明首页</a><span>血染钟楼 · v0.3.0</span></nav><h1>DeepSeek 说书人接口配置</h1>
+<h2>最简单的启用方式</h2>
+<ol start="1">
+<li>使用本次更新的 <code>blood-clocktower-android-ai.zip</code>，按《安卓平板使用.md》解压和启动。</li>
+<li>把项目里的 <code>ai.config.example.json</code> 复制一份，命名为 <code>ai.local.json</code>，放在 <code>server.js</code> 同一目录。</li>
+<li>只把 <code>apiKey</code> 的空字符串改成你在 DeepSeek 平台申请的密钥，保存。不要把密钥填在手机网页里，也不需要发到聊天中。</li>
+<li>重启游戏服务。平板“说书人操作”里会显示“已配置，未启用”，可以先点“测试连接（1 次调用）”，看到成功后再点“启用 AI”。想恢复纯自动情报时点“暂停 AI”。连接测试会调用一次真实服务，但不发送对局数据、不开始游戏。</li>
+</ol>
+<p>模板：</p>
+<pre><code>{
+  &quot;enabled&quot;: false,
+  &quot;apiKey&quot;: &quot;&quot;,
+  &quot;baseUrl&quot;: &quot;https://api.deepseek.com&quot;,
+  &quot;model&quot;: &quot;deepseek-flash&quot;,
+  &quot;timeoutMs&quot;: 12000
+}</code></pre>
+<p><code>enabled</code> 保持 <code>false</code> 时，每次启动后由平板手动启用；改成 <code>true</code> 可在启动时自动启用。默认模型按照 2026-10-22 查询的 DeepSeek 官方文档设置，可在模型名称改变时修改 <code>model</code>，不必改程序。</p>
+<p>安卓 Termux 中复制配置可以执行：</p>
+<pre><code>cd ~/blood-clocktower
+cp ai.config.example.json ai.local.json</code></pre>
+<p>随后使用文本编辑器修改这个文件。没有编辑器时可先执行 <code>pkg install nano</code>，再用 <code>nano ai.local.json</code>。修改后重启原来的启动脚本；想让各手机用自己的网络时仍然加 <code>--tunnel</code>。</p>
+<p>也支持环境变量 <code>DEEPSEEK_API_KEY</code>、<code>DEEPSEEK_BASE_URL</code>、<code>DEEPSEEK_MODEL</code>、<code>AI_TIMEOUT_MS</code>、<code>AI_ENABLED</code>。环境变量覆盖文件；<code>AI_ENABLED=1</code> 启用，<code>0</code> 关闭。接口地址须为 HTTPS；本机 HTTP 仅供自动测试。</p>
+<h2>这一版做了什么</h2>
+<p>开启 AI 后，夜间有裁量空间的信息请求会自动调用 DeepSeek。引擎生成一组候选信息卡，模型结合魔典与先前裁量选择候选编号；最终发给玩家的卡片来自引擎，不能由模型随意拼造。没有裁量空间的固定结果直接发送，不调用模型。</p>
+<p>酒鬼的假身份只从本局未在场的镇民中选择，不能是其他外来者、爪牙或恶魔。AI 接口没有更改真实身份、假身份或能力生效状态的权限。</p>
+<p>模型默认使用非思考、非流式 JSON 输出。单次调用最长 12 秒，早于引擎的 15 秒回退；断网、限流、认证失败、空响应、无效 JSON、未知候选编号或截断响应都会回退为引擎结果，不重新反复请求。暂停、跳过、重开或引擎先回退后，迟到结果会被丢弃。</p>
+<p>这次接通的是<strong>夜间私密情报裁量</strong>。公开气氛主持、语音、规则问答、动态身份后置，以及所有特殊能力的完整 AI 决策尚未接入。候选范围沿用当前引擎已实现的规则和登记策略，不代表已经覆盖所有官方裁量组合。</p>
+<h2>连接与隐私</h2>
+<p>平板统一访问 DeepSeek，各手机不需要分别配置密钥。DeepSeek 收到的私密裁量上下文包括当前魔典、情报请求和裁量记录，不含座位登录 token 或房主 PIN；公开网页只收到是否配置、是否启用和工作状态。</p>
+<p><code>ai.local.json</code> 只保存在平板服务端，已加入忽略清单，不通过网页提供，也不放进交付压缩包。私密裁量理由记录在含完整对局状态的 <code>room.json</code> 中，不进入公共日志或其他玩家视图。后续公开主持应使用独立、只含公开事实的上下文。</p>
+<p>使用真实密钥启用后，实际请求会按服务商规则计费；本次开发验证全部使用模拟接口，尚未进行真实账户联调。公网房间的可达性和 DeepSeek API 的可达性是两件事，需要在平板网络上分别确认。</p>
+<h2>故障提示</h2>
+<ul>
+<li>“请先在平板配置密钥”：检查 <code>ai.local.json</code> 的位置、JSON 格式和 <code>apiKey</code>，修改后重启。</li>
+<li>“本次调用失败，已自动发情报”：对局可以继续；检查余额、模型名、平板网络与接口地址。程序不会把服务商错误正文或密钥展示在公共屏。</li>
+<li>想暂时离线玩：点“暂停 AI”，使用共同局域网继续；跨网络隧道本身仍需要互联网。</li>
+</ul>
+<p>依据：<a href="https://api-docs.deepseek.com/zh-cn/">DeepSeek 官方首次调用说明</a>、<a href="https://api-docs.deepseek.com/zh-cn/api/create-chat-completion/">Chat Completions 接口</a>、<a href="https://api-docs.deepseek.com/zh-cn/guides/json_mode/">JSON Output</a>。</p><footer>更新日期：2026-10-22 · 本页可离线阅读；以当前程序与验证记录为准。</footer></main></body></html>

@@ -1,0 +1,17 @@
+[Unit]
+Description=Blood on the Clocktower (storyteller app)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/blood-clocktower
+ExecStart=/usr/bin/node server.js
+Environment=PORT=3000
+Environment=PUBLIC_URL=https://game.example.com
+Environment=HOST_PIN=4821
+Restart=on-failure
+RestartSec=3
+User=www-data
+
+[Install]
+WantedBy=multi-user.target
