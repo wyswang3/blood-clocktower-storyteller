@@ -1,5 +1,5 @@
 #requires -Version 7.2
-param([string]$Version = '0.4.0')
+param([string]$Version = '0.4.1')
 $ErrorActionPreference = 'Stop'
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $repository = 'wyswang3/blood-clocktower-storyteller'
@@ -29,7 +29,7 @@ try {
   $tag = 'v' + $Version
   $existing = @(Request-API 'Get' ($api + '/releases')) | Where-Object { $_.tag_name -eq $tag }
   if ($existing) { throw '此版本已存在，请先人工核实，脚本不会覆盖正式发布或旧附件' }
-  $body = "平板大厅点「连接 DeepSeek」，粘贴 API Key 后自动验证、保存、加载并启用，无需编辑配置或下载模型。暂停状态和密钥在重启后保留。僧侣保持官方规则，允许连续两晚守同一人。`n`n230 项自动测试、100 局模拟和本地七手机联机通过，包含两次真实服务重启。真实 DeepSeek、安卓真机与公网链路待验。`n`n下载 blood-clocktower-android-ai.zip，解压打开 先读我.html。源码包含测试与维护工具，旁置清单含逐文件 SHA-256。首次未连接 AI 也能开局。"
+  $body = "平板大厅点「连接 DeepSeek」，粘贴 API Key 后自动验证、保存、加载并启用，无需编辑配置或下载模型。暂停状态和密钥在重启后保留。僧侣保持官方规则，允许连续两晚守同一人。`n`n231 项自动测试、100 局模拟和本地七手机联机通过，包含两次真实服务重启。真实 DeepSeek、安卓真机与公网链路待验。`n`n下载 blood-clocktower-android-ai.zip，解压打开 先读我.html。源码包含测试与维护工具，旁置清单含逐文件 SHA-256。首次未连接 AI 也能开局。"
   $release = Request-API 'Post' ($api + '/releases') @{ tag_name = $tag; target_commitish = $localHead; name = ($tag + ' · 平板一键连接 DeepSeek'); body = $body; draft = $true; prerelease = $false }
   $uploaded = @()
   foreach ($name in $files) {

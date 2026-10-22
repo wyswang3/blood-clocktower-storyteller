@@ -1,6 +1,6 @@
 {
   "name": "blood-clocktower-storyteller",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "description": "血染钟楼 · 无人说书人：平板公共屏 + 手机私密屏，局域网或公网都能跑",
   "main": "server.js",

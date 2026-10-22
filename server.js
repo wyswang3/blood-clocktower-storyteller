@@ -552,7 +552,7 @@ function setupNotice(status, message) {
 async function configureAI(c, value) {
   if (!c.canConfigureAI) return sendTo(c.conn, { t: 'ai-setup', status: 'error', allowed: false,
     message: '请在平板本机页面或 HTTPS 房主页面填写密钥。平板本机地址见启动时显示的链接。' });
-  if (aiTestRunning) return sendTo(c.conn, { t: 'ai-setup', status: 'working', allowed: true, message: '正在连接，请稍等，不用重复点击。' });
+  if (aiTestRunning) return sendTo(c.conn, { t: 'ai-setup', status: aiSetupState.status === 'working' ? 'working' : 'error', allowed: true, message: '正在测试连接，请稍等后重试，不用重复点击。' });
   const key = validateKey(value);
   if (!key) return sendTo(c.conn, { t: 'ai-setup', status: 'error', allowed: true, message: '请粘贴完整的 API Key，不要输入代码、网址或加入空格。' });
   const candidate = configFromKey(key, process.env);

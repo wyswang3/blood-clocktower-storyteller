@@ -2,7 +2,7 @@
 
 几个朋友线下玩《血染钟楼》的辅助程序：**安卓平板运行服务器和公共屏，每人用自己的手机看身份、收情报和投票**。目前支持《暗流涌动》22 个角色、5–15 名玩家、一个房间。
 
-当前版本 **0.4.0**。这是朋友之间使用、持续维护的个人项目，仓库为私密状态。
+当前版本 **0.4.1**。这是朋友之间使用、持续维护的个人项目，仓库为私密状态。
 
 ## 下载与阅读
 
@@ -65,10 +65,10 @@ npm test
 
 测试包含引擎、专项规则、AI 模拟接口、页面渲染、入口、隧道替身、走查、多人模拟和真实本地 HTTP/WebSocket 联机。不会访问真实 DeepSeek。安卓设备与运营商公网链路仍需现场验收。
 
-维护文档后执行 `node tools/build-docs.js`。Windows PowerShell 7.2+ 中运行 `./tools/package-android.ps1` 生成运行包并逐文件核验；加 `-IncludeTests -OutputName blood-clocktower-source-v0.4.0.zip` 生成源码包。
+维护文档后执行 `node tools/build-docs.js`。Windows PowerShell 7.2+ 中运行 `./tools/package-android.ps1` 生成运行包并逐文件核验；加 `-IncludeTests -OutputName blood-clocktower-source-v0.4.1.zip` 生成源码包。
 
 ## 更新与私密文件
 
-升级应在一局结束、停止服务后进行。备份旧目录、`ai.local.json` 和 `room.json`，保留自己的配置与存档。0.4.0 存档格式为 v2，可读旧存档，但不能撤回旧版本已经发出的错误信息，正式游戏请另开新局。
+升级应在一局结束、停止服务后进行。备份旧目录、`ai.local.json` 和 `room.json`，保留自己的配置与存档。0.4.1 存档格式为 v2，可读旧存档，但不能撤回旧版本已经发出的错误信息，正式游戏请另开新局。
 
 真实密钥、房间存档、登录凭据、日志和历史备份不提交、不打包。示例配置密钥为空，不要填入后提交。官方规则与角色归原作者及 The Pandemonium Institute 所有，规则来源见核对文档。

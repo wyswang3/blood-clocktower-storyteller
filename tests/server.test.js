@@ -179,6 +179,20 @@ test('一键连接：重复点击仅调用一次，测试期间不能并发更�
   complete(); await tick(); assert.equal(saved.length, 1);
 });
 
+test('一键连接：单独测试期间更换密钥不留下永久忙状态，测试结束可以重试', async () => {
+  let complete; let calls = 0;
+  const server = boot({ env: { DEEPSEEK_API_KEY: 'old-private-key' }, setupProbe: () => {
+    calls++; return new Promise((r) => { complete = r; });
+  }, saveSettings() {} });
+  const host = hostConnection(server); host.emit('message', { t: 'host', action: 'testAI' });
+  host.emit('message', { t: 'host', action: 'configureAI', apiKey: 'new-private-key' });
+  assert.equal(host.messages.at(-1).status, 'error'); assert.equal(calls, 1);
+  complete(); await tick();
+  host.emit('message', { t: 'host', action: 'configureAI', apiKey: 'new-private-key' });
+  assert.equal(calls, 2); complete(); await tick();
+  assert.ok(host.messages.some((m) => m.t === 'ai-setup' && m.status === 'success'));
+});
+
 test('一键连接：保存失败时不换掉现有客户端；暂停必须立即生效，即使写盘失败', async () => {
   let failSave = true;
   const server = boot({ setupProbe: async () => {}, saveSettings: () => { if (failSave) throw Error('AI_SAVE_FAILED'); } });
