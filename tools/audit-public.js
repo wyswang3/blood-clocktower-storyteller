@@ -15,4 +15,5 @@ while(offset<batch.length){const end=batch.indexOf(10,offset);if(end<0)throw new
 const historicalPaths=git(['-c','core.quotePath=false','log','--all','--name-only','--pretty=format:','-z']).toString('utf8').split(/[\0\r\n]+/).filter(Boolean);
 const sensitivePaths=[...new Set(historicalPaths)].filter(p=>/(^|\/)(?:ai\.local\.json[^/]*|room[^/]*\.json|\.room[^/]*|[^/]+\.(?:jks|keystore)|password\.dpapi|\.env|local\.properties)$/.test(p));
 const result={commits:Number(git(['rev-list','--all','--count']).toString().trim()),blobs:ids.length,textBlobs,credentialPatternFindings:findings,sensitiveHistoricalPaths:sensitivePaths,passed:!findings.length&&!sensitivePaths.length,note:'模式扫描与文件路径核查，不能证明不存在所有类型的秘密；结果不打印匹配值。'};
+fs.mkdirSync(path.join(root,'artifacts'),{recursive:true});
 fs.writeFileSync(path.join(root,'artifacts','public-repository-audit.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result));if(!result.passed)process.exitCode=1;
