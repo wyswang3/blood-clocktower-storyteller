@@ -156,14 +156,14 @@ function head(v) {
 }
 
 function loadingScreen() {
-  return `<div class="waiting" style="height:100%"><div class="big">连接说书人服务…</div><div class="tiny">如果一直停在这里，检查平板和电脑是不是同一个 Wi-Fi</div><div class="tiny"><a href="/connect" style="color:#9b96a6">打开连接检查</a></div></div>`;
+  return `<div class="waiting" style="height:100%"><div class="big">连接说书人服务…</div><div class="tiny">请确认游戏仍在运行。安装版可在顶部“连接设置”中重启服务。</div><div class="tiny"><a href="/connect" style="color:#9b96a6">打开连接检查</a></div></div>`;
 }
 
 function pinScreen() {
   return `
     <div class="center stack" style="max-width:420px;margin:auto;padding:26px;width:100%">
       <h1 style="letter-spacing:.2em">说书人</h1>
-      <p class="dim">输入启动服务时控制台打印的四位 PIN。</p>
+      <p class="dim">安装版会自动进入；若连接异常，可在顶部“连接设置”中重启服务。备用运行方式使用启动窗口显示的四位 PIN。</p>
       <input id="pin-input" inputmode="numeric" maxlength="8" autocomplete="off"
         style="width:100%;padding:16px;font-size:24px;text-align:center;letter-spacing:.4em;
         background:#17171f;border:1px solid #3a3a4a;border-radius:12px;color:#ece9e4" />
@@ -200,7 +200,7 @@ function lobbyScreen(v) {
         <div>
           <h1>血染钟楼 · 无人说书人</h1>
           <p class="dim">平板放桌子中间当公共屏，每人用自己的手机看私密信息。</p>
-          <div class="url">${escapeHtml(link || '等待房间地址；本地开局请查看平板的 Wi-Fi IP。')}</div>
+          <div class="url">${escapeHtml(link || '正在准备加入链接。安装版可在顶部连接设置中重试，或切换为同一 Wi-Fi / 热点。')}</div>
           <p class="tiny dim" style="margin-top:10px">打开房间链接选座位。公网链接可各用流量或 Wi-Fi，局域网链接需连同一网络。</p>
           <div class="row wrap" style="margin-top:12px">
             <button class="btn" data-act="copy">复制链接</button>

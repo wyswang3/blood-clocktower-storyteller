@@ -68,7 +68,7 @@ public class SmokeInstrumentation extends Instrumentation {
                 try { ((Messenger) messengerField.get(activity)).send(Message.obtain(null, RoomService.STOP)); }
                 catch (Exception error) { throw new RuntimeException(error); }
             });
-            JSONObject recovered = null;
+            JSONObject recovered = null; int recoveredPort = 0; String recoveredToken = "";
             for (int i = 0; i < 60; i++) {
                 final int[] nextPort = new int[1]; final String[] nextToken = new String[1];
                 runOnMainSync(() -> {
@@ -76,11 +76,21 @@ public class SmokeInstrumentation extends Instrumentation {
                     catch (Exception error) { throw new RuntimeException(error); }
                 });
                 if (nextPort[0] > 0 && nextPort[0] != oldPort) {
-                    try { recovered = json(nextPort[0], "/__native/status", nextToken[0]); break; } catch (Exception ignored) {}
+                    try { recovered = json(nextPort[0], "/__native/status", nextToken[0]); recoveredPort = nextPort[0]; recoveredToken = nextToken[0]; break; } catch (Exception ignored) {}
                 }
                 Thread.sleep(1000);
             }
             check(recovered != null && recovered.optString("pin").equals(status.optString("pin")), "native restart did not restore room");
+            boolean publicVerified = false;
+            for (int i = 0; i < 70; i++) {
+                JSONObject current = json(recoveredPort, "/__native/status", recoveredToken);
+                String join = current.optString("joinUrl");
+                if (join.startsWith("https://") && join.endsWith("/player")) {
+                    try { publicVerified = publicHealth(join.substring(0, join.length() - 7) + "/health"); } catch (Exception ignored) {}
+                    if (publicVerified) break;
+                }
+                Thread.sleep(1000);
+            }
             Thread.sleep(3000);
             android.graphics.Bitmap screenshot = getUiAutomation().takeScreenshot();
             check(screenshot != null, "screenshot unavailable");
@@ -88,7 +98,8 @@ public class SmokeInstrumentation extends Instrumentation {
                 screenshot.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, output);
             }
             screenshot.recycle();
-            result.putString("stream", "SMOKE_OK: embedded Node, IPC, private control, public isolation, cloudflared executable, WebView lobby, native process restart and restore\n");
+            result.putString("stream", "SMOKE_OK: embedded Node, IPC, private control, public isolation, cloudflared executable, WebView lobby, native process restart and restore\n"
+                    + (publicVerified ? "PUBLIC_ROUNDTRIP_OK\n" : "PUBLIC_NOT_VERIFIED: requires on-site network validation\n"));
             finish(Activity.RESULT_OK, result);
         } catch (Throwable error) {
             // 只输出断言标签，不输出运行时状态/令牌/身份。
@@ -107,6 +118,18 @@ public class SmokeInstrumentation extends Instrumentation {
                 byte[] buffer = new byte[4096]; int count;
                 while ((count = in.read(buffer)) != -1) out.write(buffer, 0, count);
                 return new JSONObject(out.toString(StandardCharsets.UTF_8.name()));
+            }
+        } finally { conn.disconnect(); }
+    }
+    private boolean publicHealth(String address) throws Exception {
+        HttpURLConnection conn = (HttpURLConnection) new URL(address).openConnection();
+        conn.setConnectTimeout(3000); conn.setReadTimeout(5000);
+        try {
+            if (conn.getResponseCode() != 200) return false;
+            try (InputStream in = conn.getInputStream(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                byte[] buffer = new byte[2048]; int count;
+                while ((count = in.read(buffer)) != -1) { if (out.size() + count > 8192) return false; out.write(buffer, 0, count); }
+                return new JSONObject(out.toString(StandardCharsets.UTF_8.name())).optBoolean("ok");
             }
         } finally { conn.disconnect(); }
     }
