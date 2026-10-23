@@ -20,10 +20,17 @@ foreach ($line in $credentialLines) { $parts = $line -split '=', 2; if ($parts.C
 if (-not $credential['password']) { throw '缺少 GitHub 登录' }
 $headers = @{ Authorization = 'Bearer ' + $credential['password']; Accept = 'application/vnd.github+json'; 'User-Agent' = 'blood-clocktower-maintenance'; 'X-GitHub-Api-Version' = '2022-11-28' }
 function Request-API($method, $uri, $body = $null) {
-  try {
-    if ($null -eq $body) { return Invoke-RestMethod -Method $method -Uri $uri -Headers $headers }
-    return Invoke-RestMethod -Method $method -Uri $uri -Headers $headers -ContentType 'application/json; charset=utf-8' -Body ([Text.Encoding]::UTF8.GetBytes(($body | ConvertTo-Json -Depth 6)))
-  } catch { throw ('GitHub 操作失败：' + $method + '；响应正文与凭据未输出') }
+  for ($apiAttempt = 1; $apiAttempt -le 3; $apiAttempt++) {
+    try {
+      if ($null -eq $body) { $response = Invoke-RestMethod -Method $method -Uri $uri -Headers $headers -TimeoutSec 30 }
+      else { $response = Invoke-RestMethod -Method $method -Uri $uri -Headers $headers -ContentType 'application/json; charset=utf-8' -Body ([Text.Encoding]::UTF8.GetBytes(($body | ConvertTo-Json -Depth 6))) -TimeoutSec 30 }
+      # 先接收再返回，展开 REST 数组；否则列表作为单个数组对象进入后续筛选。
+      return $response
+    } catch {
+      if ($method -eq 'Get' -and $apiAttempt -lt 3) { Start-Sleep -Seconds 2; continue }
+      throw ('GitHub 操作失败：' + $method + ' ' + ([Uri]$uri).AbsolutePath + '，HTTP ' + [int]$_.Exception.Response.StatusCode + '；响应正文与凭据未输出')
+    }
+  }
 }
 try {
   $repo = Request-API 'Get' $api
