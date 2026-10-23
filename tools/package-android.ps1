@@ -14,7 +14,14 @@ if (-not $archivePath.StartsWith($artifactDir + [System.IO.Path]::DirectorySepar
 $tempArchive = $archivePath + '.' + [Guid]::NewGuid().ToString('N') + '.tmp'
 $files = @('server.js','package.json','start-android.sh','README.md','AGENTS.md','先读我.html','DeepSeek配置.md','DeepSeek配置.html','安卓平板使用.md','说书人设计.md','说书人接口.md','技术路线.md','远程连接.md','dev.md','技能判定.md','配板指南.md','修复验证_20261022.md','AI接入验证_20261022.md','官方规则核对验证_20261022.md','官方规则核对验证_20261022.html','易用性更新验证_20261022.md','易用性更新验证_20261022.html','ai.config.example.json')
 $folders = @('engine','lib','public','docs')
-if ($IncludeTests) { $folders += @('tests','tools','deploy'); $files += @('.gitignore','.gitattributes') }
+if ($IncludeTests) {
+  $folders += @('tests','tools','deploy'); $files += @('.gitignore','.gitattributes')
+  # 原生工程只收录 Git 已跟踪的源文件，不递归打进 SDK、签名、构建缓存或私密资源。
+  $nativeFiles = git -C $taskRoot ls-files -- android .github
+  if ($LASTEXITCODE -ne 0) { throw '无法读取原生源码清单' }
+  $files += $nativeFiles
+}
+$files += @('安卓安装包验证_20261023.md','安卓安装包验证_20261023.html')
 foreach ($folder in $folders) {
   foreach ($file in (Get-ChildItem -LiteralPath (Join-Path $taskRoot $folder) -File -Recurse)) { $files += [System.IO.Path]::GetRelativePath($taskRoot, $file.FullName) }
 }
@@ -23,7 +30,7 @@ $manifest = @()
 $archive = [System.IO.Compression.ZipFile]::Open($tempArchive, [System.IO.Compression.ZipArchiveMode]::Create)
 try {
   foreach ($relative in $files) {
-    if ($relative -match '(^|[\\/])(ai\.local\.json|room[^\\/]*\.json|\.room[^\\/]*|[^\\/]+\.log)$') { throw ('拒绝打包私密或临时文件：' + $relative) }
+    if ($relative -match '(^|[\\/])(ai\.local\.json|room[^\\/]*\.json|\.room[^\\/]*|[^\\/]+\.log|[^\\/]+\.(jks|keystore)|password\.dpapi|local\.properties)$') { throw ('拒绝打包私密或临时文件：' + $relative) }
     $source = Join-Path $taskRoot $relative
     $entry = 'blood-clocktower/' + $relative.Replace('\','/')
     [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive, $source, $entry, [System.IO.Compression.CompressionLevel]::Optimal) | Out-Null
@@ -44,5 +51,5 @@ Move-Item -LiteralPath $tempArchive -Destination $archivePath -Force
 $version = (Get-Content -LiteralPath (Join-Path $taskRoot 'package.json') -Raw | ConvertFrom-Json).version
 $hash = (Get-FileHash -LiteralPath $archivePath -Algorithm SHA256).Hash
 $manifestPath = $archivePath + '.manifest.json'
-[pscustomobject]@{ version = $version; date = '2026-10-22'; archive = $OutputName; sourcePackage = [bool]$IncludeTests; sha256 = $hash; files = $manifest } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $manifestPath -Encoding utf8
+[pscustomobject]@{ version = $version; date = '2026-10-23'; archive = $OutputName; sourcePackage = [bool]$IncludeTests; sha256 = $hash; files = $manifest } | ConvertTo-Json -Depth 5 | Set-Content -LiteralPath $manifestPath -Encoding utf8
 [pscustomobject]@{ archive = $archivePath; files = $manifest.Count; bytes = (Get-Item -LiteralPath $archivePath).Length; sha256 = $hash; verified = $true } | ConvertTo-Json -Compress

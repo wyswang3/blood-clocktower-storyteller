@@ -1,83 +1,45 @@
-<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>平板主人的安装与测试指南</title><style>:root{color-scheme:light}*{box-sizing:border-box}body{margin:0;background:#f3f5f9;color:#202b3b;font:16px/1.85 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1000px;margin:30px auto;padding:36px 46px;background:white;border:1px solid #dfe5ee;border-radius:16px}nav{font-size:14px;color:#627086;border-bottom:1px solid #e4e8ef;padding-bottom:14px;margin-bottom:24px}nav a{margin-right:16px}a{color:#245fa9;text-decoration:underline;text-underline-offset:3px}h1{font-size:30px;line-height:1.4;color:#142f53;margin:0 0 18px}h2{font-size:22px;line-height:1.5;margin:34px 0 12px;border-bottom:1px solid #e2e8f0;padding-bottom:8px}h3{font-size:18px;margin-top:24px}p{margin:12px 0}li{margin:6px 0}code{font:14px/1.65 ui-monospace,Consolas,monospace;background:#edf1f7;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{background:#182a40;color:#f1f5fc;padding:17px 20px;border-radius:10px;overflow:auto;white-space:pre;line-height:1.65}pre code{background:none;color:inherit;padding:0;overflow-wrap:normal}blockquote{margin:18px 0;padding:10px 18px;border-left:4px solid #819ab9;background:#f0f5fb;color:#405670}.table-wrap{overflow:auto;margin:18px 0}table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.7}th,td{border:1px solid #dce3ec;text-align:left;vertical-align:top;padding:10px 13px}th{background:#edf2f8;white-space:nowrap}tr:nth-child(even){background:#fafbfd}.cards{display:grid;gap:16px;margin:25px 0}.card{display:block;border:1px solid #d7e1ed;border-radius:12px;padding:20px 24px;text-decoration:none;background:#fafcfe}.card strong{display:block;font-size:20px;margin-bottom:4px}.card span{color:#52647b}.meta{color:#617089;font-size:14px}footer{margin-top:35px;padding-top:15px;border-top:1px solid #dfe5ee;font-size:13px;color:#6d7b8d}@media(max-width:650px){body{background:white}main{margin:0;padding:22px 18px;border:0;border-radius:0}h1{font-size:26px}nav a{display:inline-block;margin-bottom:6px}th,td{min-width:100px}pre{padding:12px;font-size:13px}}@media print{@page{size:A4;margin:16mm}body{background:white;font-size:11pt}main{max-width:none;margin:0;padding:0;border:0}nav{display:none}h2,h3{break-after:avoid}table,pre{break-inside:avoid}a{color:inherit}.table-wrap{overflow:visible}pre{white-space:pre-wrap}footer{font-size:9pt}}</style></head><body><main><nav><a href="../先读我.html">说明首页</a><span>血染钟楼 · v0.4.1</span></nav><h1>平板主人的安装与测试指南</h1>
-<p>适用版本：0.4.1｜更新日期：2026-10-22｜设备：安卓平板。</p>
-<p>这台平板负责运行游戏和显示公共局面。你自己也可以拿手机参加游戏；平板操作不需要你知道其他人的身份。程序通过 Termux 启动，游戏界面在浏览器打开。</p>
-<h2>一、先准备这些</h2>
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>平板主人的安装与测试指南</title><style>:root{color-scheme:light}*{box-sizing:border-box}body{margin:0;background:#f3f5f9;color:#202b3b;font:16px/1.85 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}main{max-width:1000px;margin:30px auto;padding:36px 46px;background:white;border:1px solid #dfe5ee;border-radius:16px}nav{font-size:14px;color:#627086;border-bottom:1px solid #e4e8ef;padding-bottom:14px;margin-bottom:24px}nav a{margin-right:16px}a{color:#245fa9;text-decoration:underline;text-underline-offset:3px}h1{font-size:30px;line-height:1.4;color:#142f53;margin:0 0 18px}h2{font-size:22px;line-height:1.5;margin:34px 0 12px;border-bottom:1px solid #e2e8f0;padding-bottom:8px}h3{font-size:18px;margin-top:24px}p{margin:12px 0}li{margin:6px 0}code{font:14px/1.65 ui-monospace,Consolas,monospace;background:#edf1f7;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{background:#182a40;color:#f1f5fc;padding:17px 20px;border-radius:10px;overflow:auto;white-space:pre;line-height:1.65}pre code{background:none;color:inherit;padding:0;overflow-wrap:normal}blockquote{margin:18px 0;padding:10px 18px;border-left:4px solid #819ab9;background:#f0f5fb;color:#405670}.table-wrap{overflow:auto;margin:18px 0}table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.7}th,td{border:1px solid #dce3ec;text-align:left;vertical-align:top;padding:10px 13px}th{background:#edf2f8;white-space:nowrap}tr:nth-child(even){background:#fafbfd}.cards{display:grid;gap:16px;margin:25px 0}.card{display:block;border:1px solid #d7e1ed;border-radius:12px;padding:20px 24px;text-decoration:none;background:#fafcfe}.card strong{display:block;font-size:20px;margin-bottom:4px}.card span{color:#52647b}.meta{color:#617089;font-size:14px}footer{margin-top:35px;padding-top:15px;border-top:1px solid #dfe5ee;font-size:13px;color:#6d7b8d}@media(max-width:650px){body{background:white}main{margin:0;padding:22px 18px;border:0;border-radius:0}h1{font-size:26px}nav a{display:inline-block;margin-bottom:6px}th,td{min-width:100px}pre{padding:12px;font-size:13px}}@media print{@page{size:A4;margin:16mm}body{background:white;font-size:11pt}main{max-width:none;margin:0;padding:0;border:0}nav{display:none}h2,h3{break-after:avoid}table,pre{break-inside:avoid}a{color:inherit}.table-wrap{overflow:visible}pre{white-space:pre-wrap}footer{font-size:9pt}}</style></head><body><main><nav><a href="../先读我.html">说明首页</a><span>血染钟楼 · v0.5.0</span></nav><h1>平板主人的安装与测试指南</h1>
+<p>适用版本：0.5.0｜更新日期：2026-10-23｜设备：安卓 8.0 及以上平板。</p>
+<p>平板运行房间服务并显示公共局面，每人用自己的手机看身份和投票。平板主人也能参加游戏，日常操作不会显示其他人的身份。</p>
+<h2>一、下载和安装</h2>
+<ol start="1">
+<li>下载本次交付的 <strong>blood-clocktower-v0.5.0.apk</strong>，保存到平板。也可登录有权限的 GitHub 账号，在 <a href="https://github.com/wyswang3/blood-clocktower-storyteller/releases/latest">最新版本</a> 的附件中下载。</li>
+<li>在“文件管理 / 下载”中点这个 APK。若系统询问，允许这次使用的文件管理器“安装未知应用”，然后点“安装”。不需要开启开发者模式或 USB 调试。</li>
+<li>安装后点 <strong>“血染说书人”</strong> 图标。首次准备可能稍慢，等到大厅出现即可。若询问是否允许通知，建议允许，方便确认房间仍在运行。</li>
+</ol>
+<p><strong>不用安装 Termux，不用解压游戏源码，不用输入命令，也不用单独安装联网工具。</strong> 应用已包含游戏服务和公网连接组件，模型仍在 DeepSeek 云端。</p>
+<p>需要安卓 8.0 及以上；安装包包含常见的 64 位和 32 位 ARM 平板版本，也包含用于电脑安卓模拟器的版本。你们的具体平板仍需按下面步骤实测。</p>
+<p>安装包约 <strong>91 MB</strong>。常见 64 位 ARM 平板安装后的基础占用预计约 <strong>180–200 MB</strong>，安装时建议至少留出 <strong>500 MB 可用空间</strong>，供下载、解包和系统临时文件使用；实际以系统应用详情为准。DeepSeek 模型在云端，不会往平板下载几个 GB 的模型。手机只打开网页，不需要下载 APK 或源码 ZIP。</p>
+<h2>二、第一次开局：三步</h2>
+<ol start="1">
+<li><strong>连接 AI（可跳过）</strong>：大厅点“连接 DeepSeek”，粘贴 API Key，点“保存并连接”。等待提示已连接、已保存。不要填代码、网址或模型名。</li>
+<li><strong>邀请朋友</strong>：顶部出现“公网房间已连接”后，点“分享加入链接”，把链接发给这桌朋友。大家用手机浏览器打开、输入名字并选座位。</li>
+<li><strong>开始游戏</strong>：所有人到齐后，在平板点“开始游戏”，各自在手机确认身份，再由平板开始第一夜。</li>
+</ol>
+<p>平板上网可以用普通 Wi-Fi，也可以连某个人的热点。公网连接成功后，其他人可以各用流量或不同 Wi-Fi。玩家手机不用安装 APK，也不用填写密钥。</p>
+<p>AI 连接测试会产生一次很小的接口调用，按 DeepSeek 账户规则计费。不连接 AI 也能完整开局；夜间 AI 失败会自动回退。首次配好后，下次打开自动读取；暂停 AI 也会被记住。详见 <a href="../DeepSeek%E9%85%8D%E7%BD%AE.html">DeepSeek 配置</a>。</p>
+<h2>三、公网不通时怎么处理</h2>
+<ol start="1">
+<li>先确认平板能正常打开普通网页；热点供网的手机也需要有流量。</li>
+<li>点顶部“连接设置 → 重新连接公网”。连接变化后要分享新链接，朋友重新打开。应用也会自动重试。请在发牌前确认大家能加入。</li>
+<li>仍然连不上时，改用“连接设置 → 大家连同一 Wi-Fi / 手机热点”，让所有手机和平板连接同一个网络，再分享链接。</li>
+</ol>
+<p>公网房间使用临时连接服务，不需要账号或域名，但可达性取决于现场网络；仅填写 DeepSeek 密钥不能解决公网不可达。旧链接失效时应用会撤回。</p>
+<p><strong>对局中尽量保持平板网络和服务不变。</strong> 同一链接下的普通断线可以恢复座位；如果临时公网地址、局域网 IP 或端口改变，手机会将它视为新网站，本版还不能自动找回旧地址下的座位。平板存档仍保留，但可能需要另开一局，不能把“重新分享链接”理解为无损恢复所有手机。最好在聚会前完成不同网络测试。</p>
+<p>同一 Wi-Fi / 热点模式下，关闭 AI 后可以不联网玩。游戏主要传文字，七台手机的游戏流量很小；若连不上，还应检查路由器设备隔离、热点人数上限或省电策略。</p>
+<h2>四、聚会前先测试</h2>
+<p>先用一部手机确认能加入，再让七人完整走一夜：</p>
+<div class="table-wrap"><table><thead><tr><th>检查</th><th>怎么操作</th><th>通过标准</th></tr></thead><tbody><tr><td>平板启动</td><td>安装后点图标</td><td>大厅正常出现，不需打开其他软件</td></tr><tr><td>手机加入</td><td>打开刚分享的链接并选座</td><td>平板显示名字，手机记住座位</td></tr><tr><td>不同网络</td><td>公网模式下让一部手机关闭 Wi-Fi、使用流量</td><td>仍能进入同一房间</td></tr><tr><td>身份与首夜</td><td>发牌、确认、开始第一夜；按手机提示行动</td><td>各人只见自己的信息，能正常走到天亮</td></tr><tr><td>提名投票</td><td>一人提名另一人，大家投票</td><td>手机反馈和平板票数一致</td></tr><tr><td>切后台</td><td>平板回桌面几分钟后再打开，手机也切后台再回来</td><td>通知仍在，恢复原局和原座位</td></tr><tr><td>AI</td><td>有密钥时先测试连接，再完成一次有裁量空间的夜间请求</td><td>成功发情报，或失败后自动回退</td></tr><tr><td>保存与恢复</td><td>测试局通过“关闭房间”退出，再点图标</td><td>平板恢复原局，密钥和暂停状态保留；检查新链接。手机跨地址恢复尚未支持，正式局避免重启</td></tr></tbody></table></div>
+<p>不要用一直点“跳过”来代替首夜测试。测试结束后点“重开一局”，正式局重新发牌。模拟器和自动测试不能替代你们的平板、运营商与真实账号验收。</p>
+<h2>五、平时需要记住的操作</h2>
 <ul>
-<li>安卓平板，建议 Android 7 或更新版本，保留足够空间并准备充电器。</li>
-<li>本次交付的 <code>blood-clocktower-android-ai.zip</code>。</li>
-<li>Termux，按 <a href="https://github.com/termux/termux-app#installation">官方安装说明</a> 选择来源。</li>
-<li>安装时需要互联网。聚会时若各用自己的网络，平板和每部手机都需要持续联网。</li>
-<li>使用 AI 时需要 DeepSeek API Key。先不填密钥，也能测试纯自动情报模式。</li>
+<li>平板保持供电和联网。系统电池设置若有“不限制后台运行”，可对“血染说书人”开启；不要在游戏中清理后台。</li>
+<li>返回桌面会继续运行房间；通知栏点一下可回来。真正结束时点顶部“关闭房间 → 保存并关闭”。下次打开可恢复。</li>
+<li>顶部“连接设置”可切换公网/同网模式、重连或重启服务；不会重新发牌。网络恢复后链接可能改变，要重新分享。</li>
+<li>白天的“开始提名”“结束提名”、进入下一夜仍需要平板操作。</li>
+<li>全桌决定提前结束时，在游戏设置里选择“提前结束”、输入获胜方并再次确认；会亮牌。自动判定仍使用标准规则。</li>
 </ul>
-<h2>二、第一次安装</h2>
-<ol start="1">
-<li>把压缩包保存到平板的“下载 / Download”文件夹。若已在文件管理器解压，可以先打开其中的 <code>先读我.html</code> 看说明；运行程序仍按下面步骤进行。</li>
-<li>安装并打开 Termux。逐行复制执行：</li>
-</ol>
-<pre><code>pkg update
-pkg install nodejs-lts unzip
-termux-setup-storage</code></pre>
-<p>出现文件访问权限提示时允许。安装软件包时若询问是否继续，输入 <code>y</code> 并回车。</p>
-<ol start="3">
-<li>解压到 Termux 自己的目录：</li>
-</ol>
-<pre><code>unzip ~/storage/downloads/blood-clocktower-android-ai.zip -d ~/
-cd ~/blood-clocktower
-sh start-android.sh</code></pre>
-<ol start="4">
-<li>看到“本机（平板）”地址和“房主 PIN”，表示服务已经启动。保持 Termux 运行，切换到浏览器，打开显示的本机地址。它类似 <code>http://127.0.0.1:3000/host?pin=四位数字</code>，PIN 以你屏幕上实际显示的为准。</li>
-<li>在系统设置中，允许 Termux 后台运行，把电池策略设为“不限制”或同等选项。聚会时让平板持续供电，避免清理后台。</li>
-</ol>
-<p>程序没有第三方 npm 依赖，不需要执行 <code>npm install</code>，也不需要安装额外的游戏 APK。</p>
-<h2>三、先做一个小测试</h2>
-<p>先不要急着开正式局，按顺序确认：</p>
-<div class="table-wrap"><table><thead><tr><th>检查</th><th>怎么做</th><th>通过标准</th></tr></thead><tbody><tr><td>平板服务</td><td>浏览器打开 <code>http://127.0.0.1:3000/health</code></td><td>显示包含 <code>&quot;ok&quot;:true</code> 的文字</td></tr><tr><td>公共屏</td><td>打开终端给出的本机房主地址</td><td>能看到大厅、人数与座位</td></tr><tr><td>手机入座</td><td>一部手机打开加入链接，输入名字并选座</td><td>平板能看到这部手机加入</td></tr><tr><td>后台运行</td><td>切到浏览器并等待几分钟</td><td>Termux 没被系统停止，手机没有持续掉线</td></tr></tbody></table></div>
-<p>这一步只证明基本连接。七个人是否都能顺畅使用，需要后面的全员测试。</p>
-<h2>四、让大家各用流量或 Wi-Fi</h2>
-<p>你们计划使用这一种。平板可以连谁的热点，也可以连普通 Wi-Fi；其他人各自有网即可。</p>
-<ol start="1">
-<li>回到 Termux，按 <code>Ctrl+C</code> 停止刚才的服务。Termux 可用底部扩展键的 CTRL 配合字母 C。</li>
-<li>第一次额外安装：</li>
-</ol>
-<pre><code>pkg install cloudflared</code></pre>
-<ol start="3">
-<li>启动公网房间：</li>
-</ol>
-<pre><code>cd ~/blood-clocktower
-sh start-android.sh --tunnel</code></pre>
-<ol start="4">
-<li>平板仍用“本机（平板）”地址。等待大厅出现类似 <code>https://某个名字.trycloudflare.com/player</code> 的加入链接，点“复制链接”或“分享链接”，只发给这桌朋友。</li>
-<li>找一部手机关闭 Wi-Fi、只用流量打开这个链接。如果能入座，再让其他人加入。</li>
-</ol>
-<p><strong>手机不能使用 <code>127.0.0.1</code>，也不要分享带 <code>pin=</code> 的房主地址。</strong> 平板重启隧道后公网地址会改变，要重新分享。临时隧道的网络可用性需要现场确认；打不开时先尝试更换平板网络。</p>
-<p>备用方案：让大家连同一个 Wi-Fi 或热点，用平板的局域网地址加入。关闭 AI 的局域网模式在安装完成后不需要互联网。</p>
-<h2>五、连接 DeepSeek（点按钮即可）</h2>
-<ol start="1">
-<li>在平板大厅点 <strong>“连接 DeepSeek”</strong>。</li>
-<li>粘贴你准备好的 <strong>API Key（密钥）</strong>，点 <strong>“保存并连接”</strong>。只填密钥，不填网址或代码。</li>
-<li>等待“DeepSeek 已连接并启用，设置已保存”。程序已自动选好模型，不需要下载模型，也不需要编辑文件或重启。</li>
-</ol>
-<p>这会发起一次小测试，按 DeepSeek 账户规则计费，但不发送对局身份、不开始游戏。没有密钥也可以先开局。</p>
-<p>以后启动自动读取设置；想不用 AI 就点“暂停 AI”，下次启动也会记住暂停。换密钥点“更换 DeepSeek 密钥”，新密钥失败不会覆盖原来的设置。</p>
-<p>若提示只能在本机或 HTTPS 页面填写，请在平板启动窗口用“本机（平板）”链接打开。手机玩家不用填密钥。详细故障说明见 <a href="../DeepSeek%E9%85%8D%E7%BD%AE.html">连接 DeepSeek</a>。</p>
-<h2>六、聚会前的全员测试</h2>
-<p>请在正式玩的地点，至少完整走一夜：</p>
-<ol start="1">
-<li>平板和七部手机全部进入同一房间，每人固定一个座位。</li>
-<li>开始游戏，所有人都能按住查看自己的身份，并点“我知道了”。平板只显示确认人数。</li>
-<li>开始第一夜。被叫到的人完成选人或情报确认，其他人继续等待。检查自己能否读懂手机提示。</li>
-<li>确认夜间能自动走到天亮；不能只依靠连续“跳过”证明游戏正常。</li>
-<li>平板开始提名，一人提名另一人，大家投一次票。核对手机反馈和平板票数。</li>
-<li>让一部手机切后台再回来，检查是否恢复原座位；不要清浏览器数据。</li>
-<li>如开启 AI，观察有裁量空间的信息请求能否完成；失败时应自动发情报，不能把整桌卡住。固定答案不会调用模型。</li>
-<li>测试局结束后，点“重开一局”准备正式游戏，避免沿用测试身份。</li>
-</ol>
-<p>目前代码和模拟联机已验证；你们的安卓平板、浏览器及运营商网络尚未真机确认。上面这次全员测试是交付验收的一部分。</p>
-<h2>七、每次开局与结束</h2>
-<p>平时只需要：联网 → Termux 运行启动脚本 → 平板打开公共屏 → 分享当前加入链接 → 等人齐 → 开始游戏。启用 AI 前可以先测一次连接。</p>
-<p>白天的“开始提名”“结束提名”、进入下一夜仍由平板操作。全桌确认不用继续时，可点“提前结束”，输入“好人”或“坏人”并再次确认；会立即亮牌。</p>
-<p>结束后回 Termux 按 <code>Ctrl+C</code>，对局保存在 <code>room.json</code>。再次启动会恢复；“重开一局”用于重新发牌。</p>
-<h2>八、升级、备份和常见问题</h2>
-<p>升级应在一局结束后，先停止服务、保留旧目录。可在 Termux 执行 <code>cp -a ~/blood-clocktower ~/blood-clocktower-backup-20261022</code>；后续换未使用过的备份名。尤其保留 <code>room.json</code> 与 <code>ai.local.json</code>，不要发群里。0.4.1 可读旧存档，但不能撤回旧版已发信息；升级后另开一局、先做小测试。最新运行包也可从私密 GitHub 仓库的 Releases 下载，需有权限的账号登录。</p>
-<div class="table-wrap"><table><thead><tr><th>现象</th><th>先检查</th></tr></thead><tbody><tr><td>手机打不开链接</td><td>是否用了当前公网 <code>/player</code> 链接，是否误用了本机或旧隧道地址</td></tr><tr><td>平板能开、手机不能开</td><td>隧道是否就绪；局域网模式下是否同网、有设备隔离</td></tr><tr><td>切到浏览器后全部掉线</td><td>Termux 是否被省电或后台清理停止</td></tr><tr><td>无法自动识别平板 IP</td><td>共同局域网时从 Wi-Fi 详情查看；公网模式等待隧道链接</td></tr><tr><td>提示端口被占用</td><td>是否已经有一个游戏服务在运行；先回原终端停止旧服务</td></tr><tr><td>AI 失败但游戏继续</td><td>已回退，先继续对局；休息时检查配置和网络</td></tr><tr><td>手机丢失座位</td><td>先回原浏览器和原链接，不要立即清数据或重开</td></tr></tbody></table></div>
-<p>遇到问题，记录发生步骤、时间、手机和平板系统版本、错误提示即可。截图不要带身份卡、PIN 或 API Key。</p><footer>更新日期：2026-10-22 · 本页可离线阅读；以当前程序与验证记录为准。</footer></main></body></html>
+<h2>六、更新和常见问题</h2>
+<p>以后下载新版 APK，直接点开 <strong>覆盖安装</strong>。只要来自本项目的同一签名，安卓会保留应用里的密钥与存档。不要先卸载旧版，也不要点系统“清除数据”；这两种操作会删除本机数据。旧 Termux 目录不会被 APK 自动导入或删除，维护者需要迁移时按技术手册处理。</p>
+<div class="table-wrap"><table><thead><tr><th>现象</th><th>处理</th></tr></thead><tbody><tr><td>安装被拦截</td><td>允许当前文件管理器安装未知应用，确认文件下载完整</td></tr><tr><td>提示与已安装版本冲突</td><td>请维护者检查版本和签名；不要直接卸载，避免丢失存档</td></tr><tr><td>大厅很久没出现</td><td>等半分钟，再到“连接设置 → 重启应用服务”；仍失败请记录型号和安卓版本</td></tr><tr><td>公网一直连接中</td><td>检查平板上网，重新连接公网，或全员改用同一 Wi-Fi / 热点</td></tr><tr><td>手机突然断线</td><td>检查平板是否被清理后台或断网；若链接变化，重新分享，不要马上重开游戏</td></tr><tr><td>手机丢了座位</td><td>使用原来的浏览器和链接；不要清浏览器数据。地址变化后的座位恢复尚未支持</td></tr><tr><td>AI 验证失败</td><td>重新复制完整密钥，检查账户余额和平板网络</td></tr></tbody></table></div>
+<p>遇到问题只需记录操作步骤、提示、型号和安卓版本。截图避开身份卡与 API Key。给所有玩家的说明见 <a href="02_%E7%8E%A9%E5%AE%B6%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.html">玩家手册</a>。</p><footer>更新日期：2026-10-23 · 本页可离线阅读；以当前程序与验证记录为准。</footer></main></body></html>

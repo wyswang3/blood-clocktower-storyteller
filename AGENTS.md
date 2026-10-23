@@ -8,6 +8,7 @@
 - 提名按每个白天各一次、禁止自提；幽灵票仅同意时消耗。
 - 密钥、登录 token、魔典和私密裁量理由不得进入公共页面、公开日志或交付包。
 - 变更对应测试、文档和进度记录必须同步；区分模拟验证、真实服务联调和安卓真机验收。
+- 安卓工程在 `android/`，构建工作流在 `.github/workflows/android.yml`；签名私钥留在本机忽略目录，不进入 Git、APK 或源码包。安卓升级保留 applicationId 和签名，versionCode 递增。
 - 文档 Markdown 为编辑源，HTML 由 `node tools/build-docs.js` 生成；Windows 运行包由 `tools/package-android.ps1` 构建并核验。
 - 保留用户 `ai.local.json` 和 `room.json`。源码已纳入 Git，修改前检查状态，保留用户未提交工作。图形配置允许用户在已认证房主的私密密码框输入密钥；不得回显、广播或写入浏览器存储。
 

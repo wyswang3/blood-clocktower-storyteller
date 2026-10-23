@@ -2,11 +2,13 @@
 
 几个朋友线下玩《血染钟楼》的辅助程序：**安卓平板运行服务器和公共屏，每人用自己的手机看身份、收情报和投票**。目前支持《暗流涌动》22 个角色、5–15 名玩家、一个房间。
 
-当前版本 **0.4.1**。这是朋友之间使用、持续维护的个人项目，仓库为私密状态。
+当前版本 **0.5.0**。这是朋友之间使用、持续维护的个人项目，仓库为私密状态。
 
 ## 下载与阅读
 
-平板主人优先下载 [最新发布版本](https://github.com/wyswang3/blood-clocktower-storyteller/releases/latest) 中的 `blood-clocktower-android-ai.zip`，解压后打开 **先读我.html**。私密仓库及附件需要登录有访问权限的 GitHub 账号。
+平板主人下载 [最新发布版本](https://github.com/wyswang3/blood-clocktower-storyteller/releases/latest) 中的 **blood-clocktower-v0.5.0.apk**，安装后点“血染说书人”图标。无需 Termux、命令或另外安装隧道工具。源码与备用运行包仍以 ZIP 提供，解压后可打开 **先读我.html**。私密仓库及附件需要登录有访问权限的 GitHub 账号。
+
+APK 约 91 MB；常见 ARM64 平板基础安装占用预计约 180–200 MB，建议安装时预留 500 MB。开发目录中的原图和构建缓存不装入平板，DeepSeek 模型也不下载。手机只打开网页。
 
 | 读者 | 文档 |
 |---|---|
@@ -18,27 +20,14 @@
 
 ## 安卓平板快速开始
 
-先按 [Termux 官方安装说明](https://github.com/termux/termux-app#installation) 安装 Termux，然后执行：
+1. 安卓 8.0+ 平板安装 APK 并打开，允许通知，等待大厅出现。
+2. 点“连接 DeepSeek”，填 API Key 后自动验证并保存；也可先跳过。
+3. 等顶部提示公网已连接，点“分享加入链接”。朋友用手机浏览器打开，各自选座位。
+4. 人齐后点“开始游戏”。
 
-```sh
-pkg update
-pkg install nodejs-lts unzip
-termux-setup-storage
-unzip ~/storage/downloads/blood-clocktower-android-ai.zip -d ~/
-cd ~/blood-clocktower
-sh start-android.sh
-```
+应用内置 Node.js 和 cloudflared，服务器仍在平板上。平板可用热点或 Wi-Fi 上网，公网连通后各手机可使用不同网络。断网会撤回旧链接并自动重试；也可在“连接设置”手动重连或切换同一 Wi-Fi / 热点。临时公网连接是否可达仍需现场验证。安装、更新和七手机验收见平板指南。原 Termux 方法保留为维护者的 [备用运行方式](安卓平板使用.md)。
 
-保持 Termux 运行，用平板浏览器打开终端显示的“本机（平板）”地址。房主 PIN 以这次启动显示的为准。程序没有第三方 npm 依赖，不需要安装额外的游戏 APK。
-
-各手机可以共用局域网，也可以各用流量或不同 Wi-Fi。后一种方式需平板持续联网，并额外安装隧道：
-
-```sh
-pkg install cloudflared
-sh start-android.sh --tunnel
-```
-
-把大厅生成的 `/player` 公网加入链接发给朋友；平板仍用本机地址。隧道重启后链接会改变。安装、后台设置和七手机验收，见平板指南。
+手机座位恢复目前要求继续使用原浏览器和同一网址；临时公网域名、IP 或端口变化后的座位迁移尚未实现。请先测好网络再发牌，对局中保持平板网络与服务稳定。
 
 ## 当前功能与边界
 
@@ -65,10 +54,10 @@ npm test
 
 测试包含引擎、专项规则、AI 模拟接口、页面渲染、入口、隧道替身、走查、多人模拟和真实本地 HTTP/WebSocket 联机。不会访问真实 DeepSeek。安卓设备与运营商公网链路仍需现场验收。
 
-维护文档后执行 `node tools/build-docs.js`。Windows PowerShell 7.2+ 中运行 `./tools/package-android.ps1` 生成运行包并逐文件核验；加 `-IncludeTests -OutputName blood-clocktower-source-v0.4.1.zip` 生成源码包。
+安卓工程在 `android/`，私密仓库的 Android APK 工作流负责构建和模拟器验收，签名在维护者本机完成，详见技术手册。维护文档后执行 `node tools/build-docs.js`。Windows PowerShell 7.2+ 中运行 `./tools/package-android.ps1` 生成备用运行包并逐文件核验；加 `-IncludeTests -OutputName blood-clocktower-source-v0.5.0.zip` 生成源码包。
 
 ## 更新与私密文件
 
-升级应在一局结束、停止服务后进行。备份旧目录、`ai.local.json` 和 `room.json`，保留自己的配置与存档。0.4.1 存档格式为 v2，可读旧存档，但不能撤回旧版本已经发出的错误信息，正式游戏请另开新局。
+APK 升级应在一局结束、关闭房间后直接覆盖安装，同一签名会保留应用内的密钥和存档。卸载或清除应用数据会删除这些内容。原 Termux 用户仍应备份旧目录、`ai.local.json` 和 `room.json`；APK 不会自动迁移旧目录。0.5.0 对局存档仍为 v2。
 
 真实密钥、房间存档、登录凭据、日志和历史备份不提交、不打包。示例配置密钥为空，不要填入后提交。官方规则与角色归原作者及 The Pandemonium Institute 所有，规则来源见核对文档。
