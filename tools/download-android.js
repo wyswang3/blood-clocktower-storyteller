@@ -1,5 +1,5 @@
 'use strict';
-// 从私密 Actions 附件按 ZIP 索引只取正式 APK 和签名工具，避免下载重复的测试 APK。
+// 从 Actions 附件按 ZIP 索引只取正式 APK 和签名工具，避免下载重复的测试 APK。
 // 凭据与带时效签名的下载地址仅留在内存，不输出、不写文件。
 const fs = require('node:fs');
 const path = require('node:path');
@@ -29,8 +29,8 @@ async function main() {
   if (!secret.password) throw new Error('credentials');
   const headers = { Authorization: 'Bearer ' + secret.password, Accept: 'application/vnd.github+json', 'User-Agent': 'blood-clocktower-maintenance' };
   async function api(route) { const r = await fetchWithRetry(BASE + route, { headers }); if (!r.ok) throw new Error('api'); return r.json(); }
-  stage = '核实私密仓库';
-  if (!(await api('')).private) throw new Error('not private');
+  stage = '核实仓库身份';
+  if ((await api('')).full_name !== 'wyswang3/blood-clocktower-storyteller') throw new Error('repository mismatch');
   const run = await api('/actions/runs/' + runId);
   const artifacts = await api('/actions/runs/' + runId + '/artifacts');
   const asset = artifacts.artifacts.find((item) => item.name === 'android-build' && !item.expired);

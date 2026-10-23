@@ -56,7 +56,7 @@
 <li>修改前重现问题，新增能区分错误与正确行为的测试。避免只检验实现本身。</li>
 <li>运行受影响测试及必要的整局、隔离和联机验证；记录权限限制与未测平台。</li>
 <li>同步三份说明的功能状态、版本和操作文案，运行 <code>node tools/build-docs.js</code>。</li>
-<li>Windows PowerShell 7.2+ 中运行 <code>./tools/package-android.ps1</code>；检查清单与 SHA-256。按白名单收录运行文件、说明和空密钥模板。加 <code>-IncludeTests -OutputName blood-clocktower-source-v0.5.0.zip</code> 生成源码包。私密仓库源码与发布附件分别交付，不把备份和测试日志提交。</li>
+<li>Windows PowerShell 7.2+ 中运行 <code>./tools/package-android.ps1</code>；检查清单与 SHA-256。按白名单收录运行文件、说明和空密钥模板。加 <code>-IncludeTests -OutputName blood-clocktower-source-v0.5.0.zip</code> 生成源码包。仓库源码与发布附件分别交付，不把备份和测试日志提交。</li>
 <li>严禁把 <code>ai.local.json</code>、<code>room.json</code>、日志、原图备份和测试房间打进普通用户包。技术人员从源码工作区维护测试，用户包不含完整测试源码。</li>
 <li>更新用户设备前停止旧服务，备份旧目录与私密配置/存档。先验小测试，再验全员局；出现兼容问题时停止服务后恢复旧目录。</li>
 </ol>
@@ -95,7 +95,7 @@
 <p>APK 内置从 Cloudflare 官方 2026.10.3 源码用 Android NDK / Go 编译的 cloudflared。使用 HTTP/2 临时隧道，默认尝试公网连接，不需要 Cloudflare 账号或域名。URL 与注册成功同时出现才公布链接；失败/退出清除链接，10 秒后重试，切网和手动重试取消旧进程。切到同网模式立即停止隧道。</p>
 <p>原生系统 API 提供局域网 IP，解决部分安卓禁止 Node 枚举网卡的问题。公网和同网链接不能混淆；同网模式不能承诺所有手机热点允许设备互访。现场公网不可达时按主人指南切换，不把密钥错误当成隧道故障。</p>
 <h3>构建与签名</h3>
-<p>私密仓库 <code>.github/workflows/android.yml</code> 使用 JDK 21、Gradle 8.9、AGP 8.7.3、SDK 35、NDK 27.2、CMake 3.22.1 构建和 lint，并安排 Android 模拟器验收。Node.js Mobile 18.20.4 官方压缩包固定 SHA-256；cloudflared 使用官方固定标签、go.sum 校验依赖。源码包不含已下载运行库和编译缓存。</p>
+<p>仓库 <code>.github/workflows/android.yml</code> 使用 JDK 21、Gradle 8.9、AGP 8.7.3、SDK 35、NDK 27.2、CMake 3.22.1 构建和 lint，并安排 Android 模拟器验收。Node.js Mobile 18.20.4 官方压缩包固定 SHA-256；cloudflared 使用官方固定标签、go.sum 校验依赖。源码包不含已下载运行库和编译缓存。</p>
 <p>构建物下载后，维护者运行 <code>tools/sign-android.ps1</code> 在本机签名并核验。私钥与 DPAPI 加密密码位于忽略的 <code>artifacts/android-signing/</code>，不上传仓库、构建服务或发布附件。密码解密依赖当前 Windows 用户；迁移维护机器前应由当前用户安全导出并备份签名材料。签名丢失会影响覆盖更新，不能随意生成新签名替换。</p>
 <p>本版沿用 Node.js Mobile 官方现成运行库；上游版本较旧。必须持续关注运行库更新与 16 KB 页设备兼容性，不能把三种 ABI 已打包等同于所有安卓机型通过。用户具体平板、真实 DeepSeek、移动运营商及长时间后台测试仍列为待验。</p>
 <p>旧 Termux 数据不会自动导入。确需迁移时，先停止两边的服务，通过受控本地方式把原 <code>room.json</code> 与 <code>ai.local.json</code> 放入应用私有目录；当前没有面向普通用户的导入按钮，不应让用户在群里传存档或密钥。建议结束旧局后用 APK 另开新局并重新填写密钥。</p>
@@ -103,6 +103,10 @@
 <p>本轮清理前工作区约 1 GB，其中构建下载、解包和测试产物约 859 MiB，用户原始图片约 152 MiB；实际 <code>public/</code> 资源约 5.29 MiB。原图、源码、历史备份和签名应保留，普通用户不需要复制整个开发工作区。</p>
 <p>通用 APK 约 91 MB，体积主要来自三种 ABI 的 Node.js、cloudflared 和 C++ 运行库。系统仅为本机提取对应 ABI；常见 arm64 设备基础安装占用预计约 180–200 MB，属估算，待真机系统存储页核实。安装时建议预留 500 MB；DeepSeek 云端模型不下载。手机只缓存网页资源。</p>
 <p>本机可清理已核验发布后的重复构建 ZIP、解包目录、旧未签名 APK 和依赖下载压缩包。必须先核对绝对路径位于 <code>artifacts/</code>，保留 <code>android-signing/</code>、最终签名 APK、源码包、验证证据以及用户配置和存档。不要把“清理缓存”写成删除整个 <code>artifacts/</code>。CI 附件保留 14 天；正式发布附件单独保留。后续可按平板 ABI 分发以减少下载，但本版优先提供一个通用安装包，避免让非技术用户选择架构。</p>
-<p>本轮移除 642.09 MiB 重复文件，目录降至 471.72 MiB（不含 <code>.git</code>），223 个受保护文件哈希一致。发布工具允许恢复未发布草稿、按远端摘要跳过已完成附件，并重试失败上传；只有全部附件大小与 SHA-256 核实后才公开该私密仓库版本，已正式发布的版本仍拒绝覆盖。</p>
+<p>本轮移除 642.09 MiB 重复文件，目录降至 471.72 MiB（不含 <code>.git</code>），223 个受保护文件哈希一致。发布工具允许恢复未发布草稿、按远端摘要跳过已完成附件，并重试失败上传；只有全部附件大小与 SHA-256 核实后才发布版本，已正式发布的版本仍拒绝覆盖。</p>
 <p>本轮低速上传约 0.2 MB/s，91 MB 附件可能超过旧六分钟时限；不是 GitHub 私密授权失效。工具使用 HTTP/1.1、十五分钟时限及连续一分钟低于 1 KiB/s 的停止保护，进度记录在忽略的 <code>artifacts/upload-*.log</code>，凭据仅从标准输入传给 curl，不进入参数、日志或文件。</p>
-<p>版本化游戏资源会保存在 <code>files/game-{version}</code>；每次升级可能留下约 5 MB 的旧资源。自动回收旧版本目录尚未实现，禁止为省空间引导用户清除应用数据。</p><footer>更新日期：2026-10-23 · 本页可离线阅读；以当前程序与验证记录为准。</footer></main></body></html>
+<p>版本化游戏资源会保存在 <code>files/game-{version}</code>；每次升级可能留下约 5 MB 的旧资源。自动回收旧版本目录尚未实现，禁止为省空间引导用户清除应用数据。</p>
+<h3>仓库公开与下载</h3>
+<p>2026-10-23 用户自行将仓库改为公开；已通过 GitHub API 确认 <code>private:false</code>，APK 下载链接无登录请求返回 HTTP 200。公开源码和安装包，不公开本机密钥、对局或签名。对局访问权限与仓库可见性是两回事。</p>
+<p>已核查当时 15 个提交、266 个历史 blob（235 个文本 blob），未发现匹配的 DeepSeek/GitHub 密钥、私钥正文或私密文件路径；这是模式和路径检查，不是对所有秘密类型的绝对保证。后续可运行 <code>node tools/audit-public.js</code> 重复核查。提交历史包含维护者自行使用的 Git 邮箱。忽略规则和发布白名单继续有效。</p>
+<p>维护工具按固定仓库全名校验，不再要求仓库保持私密；正式公开发布显式使用 <code>./tools/publish-release.ps1 -Version 新版本 -AllowPublic</code>。已发布的 v0.5.0 附件保留首次发布快照，不覆盖 tag 或旧摘要；当前说明以 main 分支手册为准。公开后的下载说明另附阅读页，不更换经过验证的 APK。</p><footer>更新日期：2026-10-23 · 本页可离线阅读；以当前程序与验证记录为准。</footer></main></body></html>

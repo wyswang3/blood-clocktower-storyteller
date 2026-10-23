@@ -1,5 +1,5 @@
 #requires -Version 7.2
-param([string]$Version = '0.5.0')
+param([string]$Version = '0.5.0', [switch]$AllowPublic)
 $ErrorActionPreference = 'Stop'
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $repository = 'wyswang3/blood-clocktower-storyteller'
@@ -34,7 +34,8 @@ function Request-API($method, $uri, $body = $null) {
 }
 try {
   $repo = Request-API 'Get' $api
-  if (-not $repo.private -or -not $repo.permissions.push) { throw '仓库必须是私密且当前账号有写入权限' }
+  if ($repo.full_name -ne $repository -or -not $repo.permissions.push) { throw '仓库身份或当前账号写入权限不符' }
+  if (-not $repo.private -and -not $AllowPublic) { throw '公开仓库发布需显式使用 -AllowPublic；脚本不会修改仓库可见性' }
   $localHead = git -C $taskRoot rev-parse HEAD
   if ($LASTEXITCODE -ne 0) { throw '本地缺少已提交版本' }
   $remote = Request-API 'Get' ($api + '/git/ref/heads/main')

@@ -11,7 +11,7 @@ $headers = @{ Authorization = 'Bearer ' + $credential.password; Accept = 'applic
 $api = 'https://api.github.com/repos/wyswang3/blood-clocktower-storyteller'
 try {
   $repo = Invoke-RestMethod $api -Headers $headers
-  if (-not $repo.private) { throw '仓库不是私密状态，停止操作' }
+  if ($repo.full_name -ne 'wyswang3/blood-clocktower-storyteller') { throw '仓库身份不符，停止操作' }
   if (-not $RunId) {
     $runs = Invoke-RestMethod ($api + '/actions/workflows/android.yml/runs?per_page=5') -Headers $headers
     if (-not $runs.workflow_runs.Count) { throw '尚无安卓构建记录' }
