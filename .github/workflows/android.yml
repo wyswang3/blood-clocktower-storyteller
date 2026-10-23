@@ -82,6 +82,8 @@ jobs:
         run: |
           go clean -cache -modcache
           sdkmanager --uninstall 'ndk;27.2.12479018' 'cmake;3.22.1'
+          # 只在 GitHub 一次性构建机移除本工程不用的预装 .NET；不影响用户电脑。
+          sudo rm -rf /usr/share/dotnet
           df -h .
       - name: 启用模拟器硬件加速
         run: sudo chmod a+rw /dev/kvm
