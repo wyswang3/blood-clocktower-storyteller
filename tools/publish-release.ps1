@@ -37,17 +37,43 @@ try {
   if (-not $passed.Count) { throw 'APK 对应提交尚无完整通过的安卓构建与模拟器验收，不发布正式版本' }
   $tag = 'v' + $Version
   $existing = @(Request-API 'Get' ($api + '/releases')) | Where-Object { $_.tag_name -eq $tag }
-  if ($existing) { throw '此版本已存在，请先人工核实，脚本不会覆盖正式发布或旧附件' }
+  if ($existing -and -not $existing.draft) { throw '此版本已正式发布，脚本不会覆盖正式发布或旧附件' }
   $body = "下载 blood-clocktower-v$Version.apk，在安卓平板安装后点图标直接进入大厅。无需 Termux、命令或另装联网工具。点「连接 DeepSeek」填写 API Key，自动验证并保存，再分享房间链接邀请手机加入。`n`nAPK 约 91 MB；常见 ARM64 平板基础安装占用预计约 180–200 MB，安装时建议预留 500 MB。模型在云端，不下载。手机只打开网页。`n`n244 项自动测试、100 局模拟、本地七手机联机，以及 Android 15 平板模拟器安装、启动与进程重启恢复已通过。服务器仍在平板上；内置公网连接、自动重试和同一 Wi-Fi / 热点备用模式。真实平板、DeepSeek 账户及运营商网络仍需现场确认，模拟器未取得公网往返成功证据。`n`n同一网址下断线可恢复座位；房间网址改变后的手机座位迁移尚未实现，正式局避免重启或切换平板网络。完整说明见源码或备用运行包中的 先读我.html。游戏规则和本桌提名限制保持原约定。`n`n后续版本请覆盖安装，不要先卸载。ZIP 是源码与备用命令行运行包；密钥、存档和签名私钥均不在附件中。"
-  $release = Request-API 'Post' ($api + '/releases') @{ tag_name = $tag; target_commitish = $localHead; name = ($tag + ' · 安卓平板直接安装'); body = $body; draft = $true; prerelease = $false }
+  $releaseData = @{ tag_name = $tag; target_commitish = $localHead; name = ($tag + ' · 安卓平板直接安装'); body = $body; draft = $true; prerelease = $false }
+  $release = if ($existing) { Request-API 'Patch' ($api + '/releases/' + $existing.id) $releaseData } else { Request-API 'Post' ($api + '/releases') $releaseData }
   $uploaded = @()
   foreach ($name in $files) {
     $file = Join-Path $taskRoot ('artifacts/' + $name)
     $sha256 = (Get-FileHash -LiteralPath $file -Algorithm SHA256).Hash
     $uri = 'https://uploads.github.com/repos/' + $repository + '/releases/' + $release.id + '/assets?name=' + [Uri]::EscapeDataString($name)
     $type = if ($name.EndsWith('.zip')) { 'application/zip' } elseif ($name.EndsWith('.apk')) { 'application/vnd.android.package-archive' } else { 'application/json' }
-    try { $asset = Invoke-RestMethod -Method Post -Uri $uri -Headers $headers -ContentType $type -InFile $file }
-    catch { throw ('附件上传失败：' + $name + '；版本仍为草稿，响应正文与凭据未输出') }
+    $asset = $null
+    for ($attempt = 1; $attempt -le 3; $attempt++) {
+      # 仅恢复本版本的未发布草稿。网络断开时服务器可能已收齐，先按摘要检查，避免重复上传。
+      $current = @(Request-API 'Get' ($api + '/releases/' + $release.id + '/assets')) | Where-Object name -eq $name
+      if ($current -and $current.state -eq 'uploaded' -and $current.size -eq (Get-Item -LiteralPath $file).Length -and $current.digest -eq ('sha256:' + $sha256.ToLowerInvariant())) { $asset = $current; break }
+      if ($current) { Request-API 'Delete' ($api + '/releases/assets/' + $current.id) | Out-Null }
+      Write-Host ('上传 ' + $name + '，第 ' + $attempt + ' 次')
+      # curl 从标准输入读取凭据，命令行不带 token；用相对 ASCII 文件名避免中文路径编码问题。
+      $curlConfig = @(
+        ('url = "' + $uri + '"')
+        ('header = "Authorization: Bearer ' + $credential['password'] + '"')
+        'header = "Accept: application/vnd.github+json"'
+        ('header = "Content-Type: ' + $type + '"')
+        'header = "User-Agent: blood-clocktower-maintenance"'
+        ('data-binary = "@' + $name + '"')
+      ) -join "`n"
+      Push-Location (Join-Path $taskRoot 'artifacts')
+      try {
+        $reply = $curlConfig | & curl.exe --config - --silent --show-error --fail --connect-timeout 30 --max-time 360
+        $uploadExit = $LASTEXITCODE
+        if ($uploadExit -eq 0) { $asset = ($reply -join "`n") | ConvertFrom-Json }
+      } catch { $uploadExit = -1 }
+      finally { Pop-Location; $curlConfig = $null; $reply = $null }
+      if ($asset) { break }
+      if ($attempt -lt 3) { Start-Sleep -Seconds 3 }
+    }
+    if (-not $asset) { throw ('附件上传失败：' + $name + '；版本仍为可恢复草稿，响应正文与凭据未输出') }
     if ($asset.state -ne 'uploaded' -or $asset.size -ne (Get-Item -LiteralPath $file).Length) { throw ('远端附件不完整：' + $name) }
     if ($asset.digest) {
       if ($asset.digest -ne ('sha256:' + $sha256.ToLowerInvariant())) { throw ('远端摘要不符：' + $name) }
