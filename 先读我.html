@@ -201,6 +201,7 @@
 <p>通用 APK 约 91 MB，体积主要来自三种 ABI 的 Node.js、cloudflared 和 C++ 运行库。系统仅为本机提取对应 ABI；常见 arm64 设备基础安装占用预计约 180–200 MB，属估算，待真机系统存储页核实。安装时建议预留 500 MB；DeepSeek 云端模型不下载。手机只缓存网页资源。</p>
 <p>本机可清理已核验发布后的重复构建 ZIP、解包目录、旧未签名 APK 和依赖下载压缩包。必须先核对绝对路径位于 <code>artifacts/</code>，保留 <code>android-signing/</code>、最终签名 APK、源码包、验证证据以及用户配置和存档。不要把“清理缓存”写成删除整个 <code>artifacts/</code>。CI 附件保留 14 天；正式发布附件单独保留。后续可按平板 ABI 分发以减少下载，但本版优先提供一个通用安装包，避免让非技术用户选择架构。</p>
 <p>本轮移除 642.09 MiB 重复文件，目录降至 471.72 MiB（不含 <code>.git</code>），223 个受保护文件哈希一致。发布工具允许恢复未发布草稿、按远端摘要跳过已完成附件，并重试失败上传；只有全部附件大小与 SHA-256 核实后才公开该私密仓库版本，已正式发布的版本仍拒绝覆盖。</p>
+<p>本轮低速上传约 0.2 MB/s，91 MB 附件可能超过旧六分钟时限；不是 GitHub 私密授权失效。工具使用 HTTP/1.1、十五分钟时限及连续一分钟低于 1 KiB/s 的停止保护，进度记录在忽略的 <code>artifacts/upload-*.log</code>，凭据仅从标准输入传给 curl，不进入参数、日志或文件。</p>
 <p>版本化游戏资源会保存在 <code>files/game-{version}</code>；每次升级可能留下约 5 MB 的旧资源。自动回收旧版本目录尚未实现，禁止为省空间引导用户清除应用数据。</p></section>
 <section id="ai-config" style="border-top:3px solid #dfe7f1;margin-top:48px;padding-top:24px"><p><a href="#top">返回目录</a></p><h2>连接 DeepSeek：平板上填一次就好</h2>
 <p>适用版本：0.5.0。普通使用者不需要编辑文件、输入代码、选择接口地址或下载模型。</p>

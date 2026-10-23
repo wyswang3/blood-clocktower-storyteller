@@ -68,11 +68,13 @@ try {
         'header = "Accept: application/vnd.github+json"'
         ('header = "Content-Type: ' + $type + '"')
         'header = "User-Agent: blood-clocktower-maintenance"'
+        'header = "Expect:"'
         ('data-binary = "@' + $name + '"')
       ) -join "`n"
       Push-Location (Join-Path $taskRoot 'artifacts')
       try {
-        $reply = $curlConfig | & curl.exe --config - --silent --show-error --fail --connect-timeout 30 --max-time 360
+        # 小带宽下 91 MB 可能超过六分钟，保留十五分钟上限和无进展保护；日志不含请求头。
+        $reply = $curlConfig | & curl.exe --config - --http1.1 --show-error --fail --connect-timeout 30 --max-time 900 --speed-limit 1024 --speed-time 60 2> ('upload-' + $name + '.log')
         $uploadExit = $LASTEXITCODE
         if ($uploadExit -eq 0) { $asset = ($reply -join "`n") | ConvertFrom-Json }
       } catch { $uploadExit = -1 }
