@@ -22,7 +22,7 @@ for abi in arm64-v8a armeabi-v7a x86_64; do
   mkdir -p "$destination"
   (cd "$source_dir" && GOOS=android GOARCH="$arch" GOARM=7 CGO_ENABLED=1 \
     CC="$ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/$compiler" \
-    go build -mod=vendor -trimpath -buildvcs=false -buildmode=pie \
+    go build -mod=readonly -trimpath -buildvcs=false -buildmode=pie \
     -ldflags='-s -w -X main.Version=2026.10.3-android -extldflags=-Wl,-z,max-page-size=16384' \
     -o "$destination/libcloudflared.so" ./cmd/cloudflared)
 done
@@ -31,3 +31,13 @@ mkdir -p "$root/android/app/src/main/assets/licenses"
 cp "$source_dir/LICENSE" "$root/android/app/src/main/assets/licenses/cloudflared-LICENSE"
 curl --fail --location --retry 3 'https://raw.githubusercontent.com/nodejs-mobile/nodejs-mobile/v18.20.4/LICENSE' \
   -o "$root/android/app/src/main/assets/licenses/nodejs-mobile-LICENSE"
+(cd "$source_dir" && go list -mod=readonly -m -f '{{if .Dir}}{{.Path}}|{{.Dir}}{{end}}' all) | while IFS='|' read -r name directory; do
+  [ -n "$directory" ] || continue
+  for license in "$directory"/LICENSE* "$directory"/NOTICE* "$directory"/COPYING*; do
+    [ -f "$license" ] || continue
+    destination="$root/android/app/src/main/assets/licenses/go-modules/$name"
+    mkdir -p "$destination"
+    cp "$license" "$destination/"
+  done
+done
+cp "$(go env GOROOT)/LICENSE" "$root/android/app/src/main/assets/licenses/go-LICENSE"

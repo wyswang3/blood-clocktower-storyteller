@@ -156,7 +156,11 @@ public class RoomService extends Service {
         stopping = true;
         new Thread(() -> {
             try { localRequest("POST", "/__native/stop"); } catch (IOException ignored) {}
-            main.post(() -> { stopForeground(STOP_FOREGROUND_REMOVE); stopSelf(); });
+            main.post(() -> {
+                stopForeground(STOP_FOREGROUND_REMOVE); stopSelf();
+                // 界面仍绑定时 stopSelf 不会触发 onDestroy，必须结束独立进程才能重新启动 V8。
+                android.os.Process.killProcess(android.os.Process.myPid());
+            });
         }, "room-stop").start();
     }
 

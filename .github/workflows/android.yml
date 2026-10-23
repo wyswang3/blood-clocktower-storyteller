@@ -40,7 +40,17 @@ jobs:
         with:
           go-version-file: artifacts/cloudflared/go.mod
           cache: false
+      - name: 缓存已编译的安卓运行环境
+        id: native-cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            android/app/libnode
+            android/app/src/main/jniLibs
+            android/app/src/main/assets/licenses
+          key: android-native-${{ hashFiles('tools/build-android-native.sh') }}
       - name: 编译 APK 内置运行环境与公网连接
+        if: steps.native-cache.outputs.cache-hit != 'true'
         run: bash tools/build-android-native.sh
       - name: 构建和静态检查
         run: |

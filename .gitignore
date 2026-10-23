@@ -27,6 +27,7 @@ android/local.properties
 android/app/libnode/
 android/app/src/main/jniLibs/
 android/app/src/main/assets/game/
+android/app/src/main/assets/licenses/
 *.jks
 *.keystore
 *.apk

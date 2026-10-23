@@ -63,7 +63,8 @@ public class SmokeInstrumentation extends Instrumentation {
             finish(Activity.RESULT_OK, result);
         } catch (Throwable error) {
             // 只输出断言标签，不输出运行时状态/令牌/身份。
-            result.putString("stream", "SMOKE_FAILED: " + error.getClass().getSimpleName() + "\n");
+            result.putString("stream", "SMOKE_FAILED: " + error.getClass().getSimpleName()
+                    + (error instanceof AssertionError ? ": " + error.getMessage() : "") + "\n");
             finish(Activity.RESULT_CANCELED, result);
         }
     }

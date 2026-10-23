@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node server.js",
     "tunnel": "node server.js --tunnel",
-    "test": "node tests/engine.test.js && node tests/rules.test.js && node tests/ai.test.js && node tests/ai-settings.test.js && node tests/ui.test.js && node tests/server.test.js && node tests/tunnel.test.js && node tests/native.test.js && node tests/playthrough.js && node tests/sim.js 100 && node tests/e2e.js",
+    "test": "node tests/engine.test.js && node tests/rules.test.js && node tests/ai.test.js && node tests/ai-settings.test.js && node tests/ui.test.js && node tests/server.test.js && node tests/tunnel.test.js && node tests/native.test.js && node tests/native-e2e.js && node tests/playthrough.js && node tests/sim.js 100 && node tests/e2e.js",
     "test:runner": "node --test tests/",
     "sim": "node tests/sim.js",
     "walk": "node tests/playthrough.js"
