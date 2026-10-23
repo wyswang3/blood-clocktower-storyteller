@@ -13,6 +13,10 @@ import java.util.*;
 /** 独立进程运行 Node，一局结束可以完整停止，下次打开不受 V8 不可重启限制。 */
 public class RoomService extends Service {
     static final int STATUS = 1, STOP = 2;
+    private volatile int port;
+    private volatile String token = "", failure = "";
+    private boolean started;
+    private volatile boolean stopping;
     private final Handler main = new Handler(Looper.getMainLooper());
     private final Messenger messenger = new Messenger(new Handler(Looper.getMainLooper(), msg -> {
         if (msg.sendingUid != android.os.Process.myUid()) return true;
@@ -25,10 +29,6 @@ public class RoomService extends Service {
         } else if (msg.what == STOP) stopRoom();
         return true;
     }));
-    private volatile int port;
-    private volatile String token = "", failure = "";
-    private boolean started;
-    private volatile boolean stopping;
     private PowerManager.WakeLock wake;
     private ConnectivityManager connectivity;
     private ConnectivityManager.NetworkCallback networkCallback;

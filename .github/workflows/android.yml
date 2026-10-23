@@ -42,7 +42,7 @@ jobs:
           cache: false
       - name: 缓存已编译的安卓运行环境
         id: native-cache
-        uses: actions/cache@v4
+        uses: actions/cache/restore@v4
         with:
           path: |
             android/app/libnode
@@ -52,13 +52,24 @@ jobs:
       - name: 编译 APK 内置运行环境与公网连接
         if: steps.native-cache.outputs.cache-hit != 'true'
         run: bash tools/build-android-native.sh
+      - name: 保留编译完成的原生组件
+        if: steps.native-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            android/app/libnode
+            android/app/src/main/jniLibs
+            android/app/src/main/assets/licenses
+          key: android-native-${{ hashFiles('tools/build-android-native.sh') }}
       - name: 构建和静态检查
         run: |
-          artifacts/gradle-8.9/bin/gradle -p android --no-daemon assembleRelease assembleDebug assembleDebugAndroidTest lintRelease
           mkdir -p artifacts/android-signing-tools
           cp "$ANDROID_HOME/build-tools/35.0.0/lib/apksigner.jar" artifacts/android-signing-tools/
+          artifacts/gradle-8.9/bin/gradle -p android --no-daemon assembleRelease assembleDebug assembleDebugAndroidTest lintRelease
           "$ANDROID_HOME/build-tools/35.0.0/zipalign" -c -P 16 4 android/app/build/outputs/apk/release/app-release-unsigned.apk
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging android/app/build/outputs/apk/release/app-release-unsigned.apk > artifacts/android-signing-tools/apk-metadata.txt
       - name: 保存构建结果
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: android-build

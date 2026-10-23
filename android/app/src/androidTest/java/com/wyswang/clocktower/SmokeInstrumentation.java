@@ -44,7 +44,7 @@ public class SmokeInstrumentation extends Instrumentation {
             check(!json(port, "/state/public", "").has("pin"), "public state leaked host PIN");
             try { json(port, "/__native/status", ""); throw new AssertionError("native status was public"); } catch (IOException expected) {}
             String nativeDir = getTargetContext().getApplicationInfo().nativeLibraryDir;
-            Process tunnel = new ProcessBuilder(nativeDir + "/libcloudflared.so", "--version").redirectErrorStream(true).start();
+            java.lang.Process tunnel = new ProcessBuilder(nativeDir + "/libcloudflared.so", "--version").redirectErrorStream(true).start();
             check(tunnel.waitFor(15, TimeUnit.SECONDS) && tunnel.exitValue() == 0, "bundled cloudflared cannot execute");
             // 在真实 Android WebView 中确认页面脚本、WebSocket 与房主认证共同成功。
             java.lang.reflect.Field field = MainActivity.class.getDeclaredField("web"); field.setAccessible(true);
