@@ -111,7 +111,9 @@ public class RoomService extends Service {
             Network[] networks = cm.getAllNetworks();
             for (int pass = 0; pass < 2; pass++) for (Network network : networks) {
                 NetworkCapabilities caps = cm.getNetworkCapabilities(network);
-                if (pass == 0 && (caps == null || !caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI))) continue;
+                if (caps == null || caps.hasTransport(NetworkCapabilities.TRANSPORT_VPN)) continue;
+                if (pass == 0 && !caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) continue;
+                if (pass == 1 && !caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) continue;
                 LinkProperties props = cm.getLinkProperties(network);
                 if (props == null) continue;
                 for (LinkAddress link : props.getLinkAddresses()) {

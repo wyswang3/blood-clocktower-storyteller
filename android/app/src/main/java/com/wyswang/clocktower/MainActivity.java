@@ -47,6 +47,11 @@ public class MainActivity extends Activity {
         getWindow().setStatusBarColor(Color.rgb(25, 20, 31));
         getWindow().setNavigationBarColor(Color.rgb(25, 20, 31));
         LinearLayout root = new LinearLayout(this); root.setOrientation(LinearLayout.VERTICAL); root.setBackgroundColor(Color.rgb(20, 18, 27));
+        if (Build.VERSION.SDK_INT >= 30) root.setOnApplyWindowInsetsListener((view, insets) -> {
+            android.graphics.Insets bars = insets.getInsets(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
+            view.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+            return insets;
+        });
         status = new TextView(this); status.setTextColor(Color.rgb(235, 224, 240)); status.setPadding(16, 8, 16, 4); status.setText("正在准备房间，首次打开请稍等…");
         root.addView(status);
         LinearLayout buttons = new LinearLayout(this);

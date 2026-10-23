@@ -1,5 +1,5 @@
 #requires -Version 7.2
-param([ValidateSet('Status','Logs','Download')][string]$Operation = 'Status', [long]$RunId = 0)
+param([ValidateSet('Status','Logs','Download')][string]$Operation = 'Status', [long]$RunId = 0, [ValidateSet('','android-build','android-smoke')][string]$ArtifactName = '')
 $ErrorActionPreference = 'Stop'
 $taskRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $credential = @{}
@@ -20,7 +20,7 @@ try {
   $run = Invoke-RestMethod ($api + '/actions/runs/' + $RunId) -Headers $headers
   if ($Operation -eq 'Status') {
     $jobs = Invoke-RestMethod ($api + '/actions/runs/' + $RunId + '/jobs') -Headers $headers
-    [pscustomobject]@{ id=$RunId; commit=$run.head_sha; status=$run.status; conclusion=$run.conclusion; url=$run.html_url; jobs=@($jobs.jobs | Select-Object id,name,status,conclusion,@{n='steps';e={$_.steps | Select-Object name,status,conclusion}}) } | ConvertTo-Json -Depth 8
+    [pscustomobject]@{ id=$RunId; commit=$run.head_sha; status=$run.status; conclusion=$run.conclusion; url=$run.html_url; jobs=@($jobs.jobs | Select-Object id,name,status,conclusion,@{n='completedSteps';e={@($_.steps | Where-Object conclusion -eq 'success').Count}},@{n='steps';e={@($_.steps | Where-Object { $_.status -eq 'in_progress' -or $_.conclusion -eq 'failure' } | Select-Object name,status,conclusion)}}) } | ConvertTo-Json -Depth 8
   } elseif ($Operation -eq 'Logs') {
     $output = Join-Path $taskRoot ('artifacts/android-run-' + $RunId + '-logs.zip')
     $jobs = Invoke-RestMethod ($api + '/actions/runs/' + $RunId + '/jobs') -Headers $headers
@@ -32,6 +32,7 @@ try {
     $assets = Invoke-RestMethod ($api + '/actions/runs/' + $RunId + '/artifacts') -Headers $headers
     foreach ($asset in $assets.artifacts) {
       if ($asset.expired -or $asset.name -notin @('android-build','android-smoke')) { continue }
+      if ($ArtifactName -and $asset.name -ne $ArtifactName) { continue }
       $output = Join-Path $taskRoot ('artifacts/' + $asset.name + '-' + $RunId + '.zip')
       Invoke-WebRequest $asset.archive_download_url -Headers $headers -OutFile $output
       Expand-Archive -LiteralPath $output -DestinationPath ($output + '.unpacked') -Force

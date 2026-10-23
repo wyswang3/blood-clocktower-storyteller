@@ -8,4 +8,4 @@ adb shell am instrument -w com.wyswang.clocktower.test/com.wyswang.clocktower.Sm
 grep -q 'SMOKE_OK' artifacts/android-smoke/instrumentation.txt
 adb shell uiautomator dump /sdcard/window.xml >/dev/null
 adb pull /sdcard/window.xml artifacts/android-smoke/window.xml
-adb exec-out screencap -p > artifacts/android-smoke/tablet.png
+adb exec-out run-as com.wyswang.clocktower cat files/smoke-tablet.png > artifacts/android-smoke/tablet.png

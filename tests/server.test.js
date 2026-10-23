@@ -8,7 +8,7 @@ const vm = require('node:vm');
 const { EventEmitter } = require('node:events');
 
 // 使用真实入口和游戏引擎，仅替换外部 IO 与时钟，重现安卓网卡异常和认证超时。
-function boot({ networkError = false, publicUrl = '', tunnelUrl = null, setupProbe, saveSettings, env = {} } = {}) {
+function boot({ networkError = false, networks = {}, publicUrl = '', tunnelUrl = null, setupProbe, saveSettings, env = {} } = {}) {
   const root = path.join(__dirname, '..');
   const timeouts = [];
   const logs = [];
@@ -18,7 +18,7 @@ function boot({ networkError = false, publicUrl = '', tunnelUrl = null, setupPro
     require(id) {
       if (id === 'node:http') return { createServer: () => ({ listen: (_port, _host, cb) => cb() }) };
       if (id === 'node:fs') return { readFileSync() { const error = new Error('no saved game'); error.code = 'ENOENT'; throw error; } };
-      if (id === 'node:os') return { networkInterfaces() { if (networkError) throw new Error('uv_interface_addresses EACCES'); return {}; } };
+      if (id === 'node:os') return { networkInterfaces() { if (networkError) throw new Error('uv_interface_addresses EACCES'); return networks; } };
       if (id === './lib/ws') return { attachWebSocket: (_server, cb) => { accept = cb; } };
       if (id === './lib/deepseek' && setupProbe) {
         const actual = require('../lib/deepseek');
@@ -80,6 +80,14 @@ test('安卓：禁止枚举网卡时仍正常启动，打印本机地址及手�
   const conn = server.connect();
   conn.emit('message', { t: 'hello', role: 'host', pin: '4321' });
   assert.ok(conn.messages.some((m) => m.t === 'sync' && m.view.phase === 'lobby'));
+});
+
+test('APK：没有 Wi-Fi 地址时不能把蜂窝网络或 VPN 地址分享为局域网房间', () => {
+  const server = boot({ env: { BTC_NATIVE_TOKEN: 'test-native-token-'.repeat(4), BTC_LAN_IP: '', TUNNEL: '0' },
+    networks: { rmnet0: [{ family: 'IPv4', address: '10.84.3.2', internal: false }] } });
+  const conn = server.connect(); conn.emit('message', { t: 'hello', role: 'host', pin: '4321' });
+  assert.equal(conn.messages.find((message) => message.t === 'sync').view.joinUrl, null);
+  assert.ok(!server.logs.join('\n').includes('4321'));
 });
 
 test('房间地址：公共配置只下发手机加入链接，不带房主 PIN', () => {

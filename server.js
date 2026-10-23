@@ -698,7 +698,7 @@ function printBanner() {
   const nets = lanAddresses();
   const host = nets.length ? nets[0].address : '<设备的局域网IP>';
   const publicUrl = (process.env.PUBLIC_URL || '').replace(/\/+$/, '');
-  localJoinUrl = nativeLanIP ? `http://${nativeLanIP}:${PORT}/player` : nets.length ? `http://${host}:${PORT}/player` : null;
+  localJoinUrl = nativeLanIP ? `http://${nativeLanIP}:${PORT}/player` : !NATIVE && nets.length ? `http://${host}:${PORT}/player` : null;
   joinUrl = publicUrl ? `${publicUrl}/player` : localJoinUrl;
   const label = publicUrl ? '公网地址' : '局域网地址';
   const lines = [
@@ -738,8 +738,9 @@ server.listen(PORT, '0.0.0.0', () => {
       port: PORT,
       startTunnel: (port, opts) => tunnel.startTunnel(port, { ...opts, timeoutMs: 60000, protocol: 'http2', waitForConnection: true }),
       onChange: ({ state, url }) => {
+        const previous = joinUrl;
         joinUrl = nativeMode === 'lan' ? localJoinUrl : state === 'online' ? `${url}/player` : null;
-        game.emit(state === 'online' ? '公网房间已连接，可以分享新的加入链接。' : nativeMode === 'lan' ? '已切换为同一 Wi-Fi / 热点模式。' : '正在恢复公网连接，请留意平板上的链接。');
+        if (joinUrl !== previous) game.emit(state === 'online' ? '公网房间已连接，可以分享新的加入链接。' : nativeMode === 'lan' ? '已切换为同一 Wi-Fi / 热点模式。' : '正在恢复公网连接，请留意平板上的链接。');
       },
     });
     if (nativeMode === 'internet') nativeTunnel.start();

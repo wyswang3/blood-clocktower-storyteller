@@ -59,7 +59,36 @@ public class SmokeInstrumentation extends Instrumentation {
             }
             check(rendered, "host lobby did not render inside WebView");
             getTargetContext().unbindService(connection);
-            result.putString("stream", "SMOKE_OK: embedded Node, IPC, private control, public isolation, cloudflared executable, WebView lobby\n");
+            // 覆盖“主界面仍绑定时重启服务”，避免 stopSelf 被绑定阻止而卡在旧进程。
+            java.lang.reflect.Field messengerField = MainActivity.class.getDeclaredField("service"); messengerField.setAccessible(true);
+            java.lang.reflect.Field portField = MainActivity.class.getDeclaredField("port"); portField.setAccessible(true);
+            java.lang.reflect.Field tokenField = MainActivity.class.getDeclaredField("token"); tokenField.setAccessible(true);
+            final int oldPort = port;
+            runOnMainSync(() -> {
+                try { ((Messenger) messengerField.get(activity)).send(Message.obtain(null, RoomService.STOP)); }
+                catch (Exception error) { throw new RuntimeException(error); }
+            });
+            JSONObject recovered = null;
+            for (int i = 0; i < 60; i++) {
+                final int[] nextPort = new int[1]; final String[] nextToken = new String[1];
+                runOnMainSync(() -> {
+                    try { nextPort[0] = portField.getInt(activity); nextToken[0] = (String) tokenField.get(activity); }
+                    catch (Exception error) { throw new RuntimeException(error); }
+                });
+                if (nextPort[0] > 0 && nextPort[0] != oldPort) {
+                    try { recovered = json(nextPort[0], "/__native/status", nextToken[0]); break; } catch (Exception ignored) {}
+                }
+                Thread.sleep(1000);
+            }
+            check(recovered != null && recovered.optString("pin").equals(status.optString("pin")), "native restart did not restore room");
+            Thread.sleep(3000);
+            android.graphics.Bitmap screenshot = getUiAutomation().takeScreenshot();
+            check(screenshot != null, "screenshot unavailable");
+            try (FileOutputStream output = new FileOutputStream(new File(getTargetContext().getFilesDir(), "smoke-tablet.png"))) {
+                screenshot.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, output);
+            }
+            screenshot.recycle();
+            result.putString("stream", "SMOKE_OK: embedded Node, IPC, private control, public isolation, cloudflared executable, WebView lobby, native process restart and restore\n");
             finish(Activity.RESULT_OK, result);
         } catch (Throwable error) {
             // 只输出断言标签，不输出运行时状态/令牌/身份。

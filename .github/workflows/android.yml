@@ -76,10 +76,13 @@ jobs:
           retention-days: 14
           path: |
             android/app/build/outputs/apk/release/*.apk
-            android/app/build/outputs/apk/debug/*.apk
-            android/app/build/outputs/apk/androidTest/debug/*.apk
             android/app/build/reports/lint-results-release.html
             artifacts/android-signing-tools/
+      - name: 释放模拟器所需空间
+        run: |
+          go clean -cache -modcache
+          sdkmanager --uninstall 'ndk;27.2.12479018' 'cmake;3.22.1'
+          df -h .
       - name: 启用模拟器硬件加速
         run: sudo chmod a+rw /dev/kvm
       - name: 安卓模拟器运行验收
@@ -89,6 +92,9 @@ jobs:
           arch: x86_64
           target: google_apis
           profile: pixel_tablet
+          ram-size: 2048M
+          disk-size: 2048M
+          emulator-boot-timeout: 300
           disable-animations: true
           script: bash tools/smoke-android.sh
       - name: 保存安卓验收证据
